@@ -1,0 +1,44 @@
+/* Shared base styles with tickets/dashboard */
+.ticketdetails-container { display:flex; height:100vh; background:#f5f0e8; color:#333; font-family:"Poppins",sans-serif; }
+.sidebar { width:230px; background:#fde9b8; padding:20px; display:flex; flex-direction:column; }
+.logo { font-weight:700; font-size:20px; margin-bottom:25px; }
+.sidebar ul { list-style:none; padding:0; }
+.sidebar li { padding:10px; margin-bottom:5px; cursor:pointer; border-radius:6px; }
+.sidebar li.active, .sidebar li:hover { background:#ffd699; font-weight:600; }
+.sidebar .nav-link { color:inherit; text-decoration:none; }
+.main-content { flex:1; padding:25px 40px; overflow-y:auto; }
+.page-header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:16px; }
+.header-icons { display:flex; align-items:center; gap:12px; font-size:20px; }
+.page-header h2 { font-size:22px; }
+.page-header .breadcrumbs a { color:#333; text-decoration:none; }
+
+.details-grid { display:grid; grid-template-columns: 1fr 340px; gap:18px; }
+.card { background:#ffffff; border-radius:12px; box-shadow:0 2px 5px rgba(0,0,0,.05); padding:18px; border:1px solid #e0e0e0; }
+.ticket-info .info-row { display:flex; gap:24px; margin-bottom:10px; }
+.label { color:#666; font-size:12px; margin:8px 0 4px; }
+.value { font-weight:600; }
+.grid-2 { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:16px; margin-top:10px; }
+
+.chip { display:inline-block; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:600; }
+.chip-priority-high { background:#ffe6e6; color:#ff5252; border:1px solid #ffb3b3; }
+.chip-priority-medium { background:#e8f5e9; color:#4caf50; border:1px solid #c8e6c9; }
+.chip-priority-low { background:#eeeeee; color:#616161; border:1px solid #e0e0e0; }
+.chip-status-open { background:#f87171; color:#fff; }
+.chip-status-progress { background:#60a5fa; color:#fff; }
+.chip-status-resolved { background:#4ade80; color:#fff; }
+
+.attachments .attachment-strip { display:flex; gap:12px; }
+.attachments img { width:320px; height:160px; object-fit:cover; border-radius:8px; }
+
+.timeline { list-style:none; padding-left:12px; }
+.timeline li { display:flex; gap:10px; align-items:flex-start; margin:10px 0; }
+.timeline .dot { width:10px; height:10px; background:#f6b70b; border-radius:50%; margin-top:6px; }
+.hint { color:#777; font-size:12px; }
+
+.right-rail { display:flex; flex-direction:column; gap:16px; }
+.right-rail .form select, .right-rail .form input, .right-rail textarea, .right-rail input { width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:8px; background:#fff; font-family:"Poppins",sans-serif; }
+.btn { background:#f6b70b; border:none; border-radius:8px; padding:10px 14px; font-weight:600; cursor:pointer; margin-top:10px; width:100%; }
+
+@media (max-width: 1000px){
+  .details-grid { grid-template-columns: 1fr; }
+}

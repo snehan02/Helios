@@ -1,0 +1,23 @@
+/* Dashboard layout shares look with tickets page */
+.dashboard-container { display:flex; height:100vh; background:#f5f0e8; color:#333; font-family:"Poppins",sans-serif; }
+.sidebar { width:230px; background:#fde9b8; padding:20px; display:flex; flex-direction:column; }
+.logo { font-weight:700; font-size:20px; margin-bottom:25px; }
+.sidebar ul { list-style:none; padding:0; }
+.sidebar li { padding:10px; margin-bottom:5px; cursor:pointer; border-radius:6px; }
+.sidebar li.active, .sidebar li:hover { background:#ffd699; color:#000; font-weight:600; }
+.sidebar .nav-link { color:inherit; text-decoration:none; }
+.main-content { flex:1; padding:25px 40px; overflow-y:auto; }
+.page-header { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.page-header h2 { font-size:22px; margin-bottom:20px; }
+.header-actions { display:flex; align-items:center; gap:12px; }
+.header-icons { display:flex; align-items:center; gap:12px; font-size:20px; }
+.stats { display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:15px; margin-bottom:25px; align-items:start; }
+.stat-card { background:#e8e4dd; border-radius:10px; padding:15px; text-align:center; box-shadow:0 2px 5px rgba(0,0,0,0.05); }
+.stat-card p { color:#666; font-size:14px; }
+.stat-card h3 { font-size:22px; margin-top:8px; }
+.create-btn { background:#f6b70b; border:none; border-radius:8px; padding:10px 14px; font-weight:600; cursor:pointer; justify-self:end; }
+.modules-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:18px; }
+.module-card { background:#ffffff; border-radius:12px; padding:22px; box-shadow:0 2px 5px rgba(0,0,0,.05); border:1px solid #e0e0e0; }
+.module-card.link { text-decoration:none; color:inherit; }
+.module-title { font-weight:700; margin-bottom:6px; }
+.module-desc { color:#666; font-size:14px; }
