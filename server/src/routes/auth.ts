@@ -1,68 +1,65 @@
-import { Router } from 'express';
+import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import prisma from '../lib/prisma';
-import { z } from 'zod';
+import User from '../models/User';
+import Client from '../models/Client';
 
-const router = Router();
+const router = express.Router();
 
-const loginSchema = z.object({
-    email: z.string().email(),
-    password: z.string(),
-});
-
-router.post('/login', async (req, res) => {
+// Login Route
+router.post('/login', async (req: any, res: any) => {
     try {
-        const { email, password } = loginSchema.parse(req.body);
+        const { email, password } = req.body;
 
-        const user = await prisma.user.findUnique({
-            where: { email },
-            include: { client: true },
-        });
-
-        if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+        // Find user by email
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        if (!user.isActive) {
-            return res.status(403).json({ message: 'Account is deactivated' });
+        // Verify password
+        const isMatch = await bcrypt.compare(password, user.passwordHash);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid credentials' });
         }
 
+        if (user.role === 'client' && !user.clientId) {
+            // Edge case: Client user without linked Client profile
+            console.warn(`User ${user.id} has role client but no clientId`);
+        }
+
+        // Create JWT token
         const token = jwt.sign(
             {
-                id: user.id,
+                id: user._id,
                 email: user.email,
                 role: user.role,
-                clientId: user.clientId,
+                clientId: user.clientId
             },
             process.env.JWT_SECRET as string,
             { expiresIn: '24h' }
         );
 
-        // Update last login
-        await prisma.user.update({
-            where: { id: user.id },
-            data: { lastLoginAt: new Date() }, // Corrected: use new Date()
-        });
+        // Fetch client details if user is a client
+        let clientDetails = null;
+        if (user.clientId) {
+            clientDetails = await Client.findById(user.clientId);
+        }
 
+        // Return user info
         res.json({
             token,
             user: {
-                id: user.id,
+                id: user._id,
                 email: user.email,
-                firstName: user.firstName,
-                lastName: user.lastName,
                 role: user.role,
                 clientId: user.clientId,
-                client: user.client,
-            },
+                client: clientDetails
+            }
         });
     } catch (error) {
-        if (error instanceof z.ZodError) {
-            return res.status(400).json({ message: 'Invalid request data', errors: error.issues });
-        }
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+        console.error('Login error:', error);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
