@@ -1,80 +1,91 @@
-import { Router } from 'express';
-import prisma from '../lib/prisma';
-import { authenticate, authorize, AuthRequest } from '../middleware/auth';
-import { z } from 'zod';
+import express from 'express';
+import DashboardData from '../models/DashboardData';
+import { authenticate, authorize } from '../middleware/auth';
 
-const router = Router();
+const router = express.Router();
 
-const boxSchema = z.object({
-    clientId: z.string().uuid(),
-    type: z.enum(['PAYMENT', 'RESOURCE', 'METRIC', 'CUSTOM']),
-    title: z.string().min(1),
-    data: z.any(),
-    displayOrder: z.number().optional(),
-    isVisible: z.boolean().optional(),
-});
-
-// Get boxes for a client
-router.get('/:clientId', authenticate, async (req: AuthRequest, res) => {
-    const { clientId } = req.params;
-
-    if (req.user?.role === 'CLIENT' && req.user.clientId !== clientId) {
-        return res.status(403).json({ message: 'Access denied' });
-    }
-
+// Get dashboard data (Read: Admin & Client)
+router.get('/:clientId', authenticate, async (req: any, res: any) => {
     try {
-        const boxes = await prisma.dashboardBox.findMany({
-            where: { clientId, isVisible: true },
-            orderBy: { displayOrder: 'asc' },
-        });
-        res.json(boxes);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching dashboard boxes' });
-    }
-});
+        const { clientId } = req.params;
 
-// Create box (Admin only)
-router.post('/', authenticate, authorize(['SUPER_ADMIN', 'ACCOUNT_MANAGER']), async (req, res) => {
-    try {
-        const validatedData = boxSchema.parse(req.body);
-        const box = await prisma.dashboardBox.create({
-            data: {
-                ...validatedData,
-                data: JSON.stringify(validatedData.data)
-            }
-        });
-        res.status(201).json(box);
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            return res.status(400).json({ message: 'Invalid data', errors: error.issues });
+        // Security check
+        if (req.user.role === 'client' && req.user.clientId !== clientId) {
+            return res.status(403).json({ message: 'Access denied' });
         }
-        res.status(500).json({ message: 'Error creating dashboard box' });
+
+        let dashboardData = await DashboardData.findOne({ client: clientId });
+
+        if (!dashboardData) {
+            // Return empty structure if not found
+            return res.json({
+                payments: [],
+                metrics: [],
+                resources: []
+            });
+        }
+
+        res.json(dashboardData);
+    } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
-// Update box
-router.put('/:id', authenticate, authorize(['SUPER_ADMIN', 'ACCOUNT_MANAGER']), async (req, res) => {
+// Update Payments (Admin Only)
+router.put('/:clientId/payments', authenticate, authorize(['admin']), async (req: any, res: any) => {
     try {
-        const { id } = req.params;
-        const data = boxSchema.partial().parse(req.body);
-        const box = await prisma.dashboardBox.update({
-            where: { id },
-            data,
-        });
-        res.json(box);
+        const { clientId } = req.params;
+        const { payments } = req.body;
+
+        const dashboardData = await DashboardData.findOneAndUpdate(
+            { client: clientId },
+            { $set: { payments } },
+            { new: true, upsert: true, setDefaultsOnInsert: true }
+        );
+
+        res.json(dashboardData);
     } catch (error) {
-        res.status(500).json({ message: 'Error updating dashboard box' });
+        console.error('Error updating payments:', error);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
-// Delete box
-router.delete('/:id', authenticate, authorize(['SUPER_ADMIN', 'ACCOUNT_MANAGER']), async (req, res) => {
+// Update Metrics (Admin Only)
+router.put('/:clientId/metrics', authenticate, authorize(['admin']), async (req: any, res: any) => {
     try {
-        const { id } = req.params;
-        await prisma.dashboardBox.delete({ where: { id } });
-        res.status(204).send();
+        const { clientId } = req.params;
+        const { metrics } = req.body;
+
+        const dashboardData = await DashboardData.findOneAndUpdate(
+            { client: clientId },
+            { $set: { metrics } },
+            { new: true, upsert: true, setDefaultsOnInsert: true }
+        );
+
+        res.json(dashboardData);
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting dashboard box' });
+        console.error('Error updating metrics:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Update Resources (Admin Only)
+router.put('/:clientId/resources', authenticate, authorize(['admin']), async (req: any, res: any) => {
+    try {
+        const { clientId } = req.params;
+        const { resources } = req.body;
+
+        const dashboardData = await DashboardData.findOneAndUpdate(
+            { client: clientId },
+            { $set: { resources } },
+            { new: true, upsert: true, setDefaultsOnInsert: true }
+        );
+
+        res.json(dashboardData);
+    } catch (error) {
+        console.error('Error updating resources:', error);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 

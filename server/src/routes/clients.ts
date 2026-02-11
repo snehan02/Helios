@@ -1,72 +1,92 @@
-import { Router } from 'express';
-import prisma from '../lib/prisma';
-import { authenticate, authorize, AuthRequest } from '../middleware/auth';
-import { z } from 'zod';
+import express from 'express';
+import bcrypt from 'bcryptjs';
+import User from '../models/User';
+import Client from '../models/Client';
+import { authenticate, authorize } from '../middleware/auth';
 
-const router = Router();
-
-const clientSchema = z.object({
-    companyName: z.string().min(2),
-    primaryContactName: z.string().min(2),
-    logoUrl: z.string().url().optional().nullable(),
-    primaryColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
-    secondaryColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional().nullable(),
-});
+const router = express.Router();
 
 // Get all clients (Admin only)
-router.get('/', authenticate, authorize(['SUPER_ADMIN']), async (req, res) => {
+router.get('/', authenticate, authorize(['admin']), async (req, res) => {
     try {
-        const clients = await prisma.client.findMany({
-            include: {
-                _count: {
-                    select: { users: true, workLogs: true }
-                }
-            }
-        });
+        const clients = await Client.find().sort({ createdAt: -1 });
         res.json(clients);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching clients' });
+        console.error('Error fetching clients:', error);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
-// Create client (Super Admin only)
-router.post('/', authenticate, authorize(['SUPER_ADMIN']), async (req, res) => {
+// Create new client (Admin only)
+router.post('/', authenticate, authorize(['admin']), async (req: any, res: any) => {
     try {
-        const data = clientSchema.parse(req.body);
-        const client = await prisma.client.create({ data });
-        res.status(201).json(client);
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            return res.status(400).json({ message: 'Invalid data', errors: error.issues });
+        const { name, email, password, industry, logoUrl, brandColors } = req.body;
+
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: 'User with this email already exists' });
         }
-        res.status(500).json({ message: 'Error creating client' });
-    }
-});
 
-// Get single client (Admin or assigned Client)
-router.get('/:id', authenticate, async (req: AuthRequest, res) => {
-    const { id } = req.params;
+        // 1. Create User
+        const passwordHash = await bcrypt.hash(password, 10);
+        const newUser = new User({
+            email,
+            passwordHash,
+            role: 'client'
+        });
+        await newUser.save();
 
-    // Authorization check
-    if (req.user?.role === 'CLIENT' && req.user.clientId !== id) {
-        return res.status(403).json({ message: 'Access denied' });
-    }
+        // 2. Create Client Profile
+        const newClient = new Client({
+            name,
+            industry,
+            logoUrl,
+            brandColors: {
+                primary: brandColors?.primary || '#000000',
+                secondary: brandColors?.secondary || '#ffffff'
+            },
+            userId: newUser._id
+        });
+        await newClient.save();
 
-    try {
-        const client = await prisma.client.findUnique({
-            where: { id },
-            include: {
-                dashboardBoxes: {
-                    where: { isVisible: true },
-                    orderBy: { displayOrder: 'asc' }
-                }
+        // 3. Link Client to User
+        newUser.clientId = newClient._id as any;
+        await newUser.save();
+
+        res.status(201).json({
+            message: 'Client created successfully',
+            client: newClient,
+            user: {
+                id: newUser._id,
+                email: newUser.email
             }
         });
+    } catch (error) {
+        console.error('Error creating client:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 
-        if (!client) return res.status(404).json({ message: 'Client not found' });
+// Get single client details
+router.get('/:id', authenticate, async (req: any, res: any) => {
+    try {
+        const clientId = req.params.id;
+
+        // Security check: Clients can only view their own profile
+        if (req.user.role === 'client' && req.user.clientId !== clientId) {
+            return res.status(403).json({ message: 'Access denied' });
+        }
+
+        const client = await Client.findById(clientId);
+        if (!client) {
+            return res.status(404).json({ message: 'Client not found' });
+        }
+
         res.json(client);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching client' });
+        console.error('Error fetching client:', error);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 

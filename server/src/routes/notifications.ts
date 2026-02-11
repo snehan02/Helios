@@ -1,27 +1,43 @@
 import { Router } from 'express';
-import prisma from '../lib/prisma';
+import BlockingNotification from '../models/BlockingNotification';
 import { authenticate, authorize, AuthRequest } from '../middleware/auth';
 import { z } from 'zod';
 
 const router = Router();
 
 const notificationSchema = z.object({
-    clientId: z.string().uuid(),
+    clientId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId"),
     message: z.string().min(1),
 });
 
 // Get notifications (Admin only)
 router.get('/', authenticate, authorize(['SUPER_ADMIN', 'ACCOUNT_MANAGER']), async (req, res) => {
     try {
-        const notifications = await prisma.blockingNotification.findMany({
-            include: {
-                client: true,
-                resolvedBy: true,
-            },
-            orderBy: { createdAt: 'desc' },
+        const notifications = await BlockingNotification.find()
+            .populate('clientId') // Note: In schema it's ref: 'Client', path is 'clientId'
+            .populate('resolvedByUserId') // Path in schema
+            .sort({ createdAt: -1 });
+
+        // Map to match expected structure if needed, but Mongoose populate returns objects under the path name.
+        // Prisma returned `client` and `resolvedBy`. 
+        // We might need to map `clientId` (populated) to `client` to match frontend expectations if it expects `notification.client`.
+        // However, Mongoose populates *in place*. So `notification.clientId` will be the client object.
+        // If frontend expects `notification.client`, we can map it or adjust frontend.
+        // For least friction, let's map it.
+
+        const formattedNotifications = notifications.map(n => {
+            const obj = n.toObject();
+            return {
+                ...obj,
+                client: obj.clientId, // Map populated field to expected name
+                resolvedBy: obj.resolvedByUserId, // Map populated field to expected name
+                // keep original IDs if needed, but they are now objects.
+            };
         });
-        res.json(notifications);
+
+        res.json(formattedNotifications);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ message: 'Error fetching notifications' });
     }
 });
@@ -36,12 +52,10 @@ router.post('/', authenticate, async (req: AuthRequest, res) => {
             return res.status(403).json({ message: 'Access denied' });
         }
 
-        const notification = await prisma.blockingNotification.create({
-            data: {
-                clientId,
-                message,
-                blockingDate: new Date(),
-            }
+        const notification = await BlockingNotification.create({
+            clientId,
+            message,
+            blockingDate: new Date(),
         });
 
         res.status(201).json(notification);
@@ -57,14 +71,15 @@ router.post('/', authenticate, async (req: AuthRequest, res) => {
 router.put('/:id/resolve', authenticate, authorize(['SUPER_ADMIN', 'ACCOUNT_MANAGER']), async (req: AuthRequest, res) => {
     try {
         const { id } = req.params;
-        const notification = await prisma.blockingNotification.update({
-            where: { id },
-            data: {
+        const notification = await BlockingNotification.findByIdAndUpdate(
+            id,
+            {
                 isResolved: true,
                 resolvedAt: new Date(),
                 resolvedByUserId: req.user!.id,
-            }
-        });
+            },
+            { new: true }
+        );
         res.json(notification);
     } catch (error) {
         res.status(500).json({ message: 'Error resolving notification' });
