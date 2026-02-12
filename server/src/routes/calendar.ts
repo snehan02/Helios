@@ -35,17 +35,31 @@ router.get('/:clientId', authenticate, async (req: any, res: any) => {
     }
 });
 
-// Add/Update calendar entry (Admin only)
-router.post('/', authenticate, authorize(['admin']), async (req: any, res: any) => {
+// Add/Update calendar entry (Admin or Client for Blocked status)
+router.post('/', authenticate, async (req: any, res: any) => {
     try {
         const { clientId, date, status, details } = req.body;
+
+        // Security Check
+        if (req.user.role === 'client') {
+            // Client can only update their own calendar
+            if (req.user.clientId.toString() !== clientId) {
+                return res.status(403).json({ message: 'Access denied: You can only update your own calendar.' });
+            }
+            // Client can only set status to 'yellow' (Blocked)
+            if (status !== 'yellow') {
+                return res.status(403).json({ message: 'Access denied: Clients can only mark themselves as blocked.' });
+            }
+        }
 
         const client = await Client.findById(clientId);
         if (!client) {
             return res.status(404).json({ message: 'Client not found' });
         }
 
-        const entryDate = new Date(date);
+        // Normalize date: Strip time to ensure consistency (midnight UTC)
+        const d = new Date(date);
+        const entryDate = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
 
         // Upsert logic: Update if exists, Create if not
         const entry = await CalendarEntry.findOneAndUpdate(
@@ -57,6 +71,11 @@ router.post('/', authenticate, authorize(['admin']), async (req: any, res: any) 
             },
             { new: true, upsert: true, setDefaultsOnInsert: true }
         );
+
+        if (status === 'yellow') {
+            // TODO: Real notification implementation (Email/Push/Socket)
+            console.log(`[NOTIFICATION] Client ${client.name} is BLOCKED on ${date}. Details: ${details}`);
+        }
 
         res.json(entry);
     } catch (error) {

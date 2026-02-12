@@ -89,4 +89,23 @@ router.put('/:clientId/resources', authenticate, authorize(['admin']), async (re
     }
 });
 
+// Update dynamic layout (Admin Only)
+router.put('/:clientId/layout', authenticate, authorize(['admin']), async (req: any, res: any) => {
+    try {
+        const { clientId } = req.params;
+        const { layout } = req.body;
+
+        const dashboardData = await DashboardData.findOneAndUpdate(
+            { client: clientId },
+            { $set: { layout } },
+            { new: true, upsert: true, setDefaultsOnInsert: true }
+        );
+
+        res.json(dashboardData);
+    } catch (error) {
+        console.error('Error updating layout:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 export default router;

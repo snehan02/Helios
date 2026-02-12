@@ -1,22 +1,38 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { X, Upload, Palette, Loader } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../api/axios';
 
-const CreateClientModal = ({ isOpen, onClose, onSave }) => {
+const EditClientModal = ({ isOpen, onClose, onSave, client }) => {
     const fileInputRef = useRef(null);
     const [isLoading, setIsLoading] = useState(false);
     const [previewUrl, setPreviewUrl] = useState('');
     const [formData, setFormData] = useState({
         name: '',
-        email: '',
         industry: '',
-        password: '',
         status: 'Onboarding',
-        logo: null,
         primaryColor: '#3B82F6',
-        secondaryColor: '#ffffff'
+        secondaryColor: '#ffffff',
+        logo: null
     });
+
+    useEffect(() => {
+        if (client) {
+            setFormData({
+                name: client.name || '',
+                industry: client.industry || '',
+                status: client.status || 'Onboarding',
+                primaryColor: client.brandColors?.primary || '#3B82F6',
+                secondaryColor: client.brandColors?.secondary || '#ffffff',
+                logo: null
+            });
+            if (client.logoUrl) {
+                setPreviewUrl(`http://localhost:5000${client.logoUrl}`);
+            } else {
+                setPreviewUrl('');
+            }
+        }
+    }, [client]);
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -32,8 +48,6 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
 
         const data = new FormData();
         data.append('name', formData.name);
-        data.append('email', formData.email);
-        data.append('password', formData.password);
         data.append('industry', formData.industry);
         data.append('status', formData.status);
         data.append('primaryColor', formData.primaryColor);
@@ -43,17 +57,14 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
         }
 
         try {
-            const response = await api.post('/clients', data, {
+            const response = await api.put(`/clients/${client._id}`, data, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             onSave(response.data.client);
             onClose();
-            // Reset form
-            setFormData({ name: '', email: '', password: '', industry: '', status: 'Onboarding', logo: null, primaryColor: '#3B82F6', secondaryColor: '#ffffff' });
-            setPreviewUrl('');
         } catch (error) {
-            console.error("Error creating client", error);
-            alert(error.response?.data?.message || "Failed to create client");
+            console.error("Error updating client", error);
+            alert(error.response?.data?.message || "Failed to update client");
         } finally {
             setIsLoading(false);
         }
@@ -63,7 +74,6 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
         <AnimatePresence>
             {isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-                    {/* Backdrop click to close */}
                     <div className="absolute inset-0" onClick={onClose}></div>
 
                     <motion.div
@@ -73,14 +83,13 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
                         className="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-lg shadow-2xl relative z-10 overflow-hidden"
                     >
                         <div className="flex items-center justify-between p-6 border-b border-gray-700">
-                            <h2 className="text-xl font-bold text-white">Add New Client</h2>
+                            <h2 className="text-xl font-bold text-white">Edit Client</h2>
                             <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
                                 <X size={20} />
                             </button>
                         </div>
 
                         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                            {/* Name */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-300 mb-1">Client Name</label>
                                 <input
@@ -89,37 +98,9 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
-                                    placeholder="e.g. Acme Corp"
                                 />
                             </div>
 
-                            {/* Email */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-1">Admin Email</label>
-                                <input
-                                    type="email"
-                                    required
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
-                                    placeholder="admin@client.com"
-                                />
-                            </div>
-
-                            {/* Client Password (Initial) */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-1">Initial Password</label>
-                                <input
-                                    type="password"
-                                    required
-                                    value={formData.password}
-                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
-                                    placeholder="Create a strong password"
-                                />
-                            </div>
-
-                            {/* Client Industry & Status */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-300 mb-1">Industry</label>
@@ -128,7 +109,6 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
                                         value={formData.industry}
                                         onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
                                         className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
-                                        placeholder="e.g. Technology"
                                     />
                                 </div>
                                 <div>
@@ -145,7 +125,6 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
                                 </div>
                             </div>
 
-                            {/* Logo Upload */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-300 mb-1">Client Logo</label>
                                 <div
@@ -157,7 +136,7 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
                                     ) : (
                                         <div className="flex flex-col items-center gap-2 text-gray-500 group-hover:text-blue-400">
                                             <Upload size={24} />
-                                            <span className="text-xs">Click to upload logo</span>
+                                            <span className="text-xs">Click to change logo</span>
                                         </div>
                                     )}
                                     <input
@@ -170,7 +149,6 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
                                 </div>
                             </div>
 
-                            {/* Brand Colors */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-300 mb-1">Primary Color</label>
@@ -213,10 +191,10 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
                                     {isLoading ? (
                                         <div className="flex items-center gap-2">
                                             <Loader size={18} className="animate-spin" />
-                                            <span>Creating...</span>
+                                            <span>Updating...</span>
                                         </div>
                                     ) : (
-                                        'Create Client'
+                                        'Update Client'
                                     )}
                                 </button>
                             </div>
@@ -228,4 +206,4 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
     );
 };
 
-export default CreateClientModal;
+export default EditClientModal;

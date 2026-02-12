@@ -25,6 +25,8 @@ const InfoBox = ({ title, data, type, onSave, readOnly = false }) => {
         setIsEditing(false);
     };
 
+    if (readOnly && items.length === 0) return null;
+
     return (
         <div className="bg-gray-800 border border-gray-700 rounded-xl p-5 flex flex-col h-full">
             <div className="flex items-center justify-between mb-4">
@@ -49,7 +51,7 @@ const InfoBox = ({ title, data, type, onSave, readOnly = false }) => {
 
             <div className="space-y-3 flex-1 overflow-y-auto pr-1 custom-scrollbar">
                 {items.length === 0 && !isEditing && (
-                    <p className="text-gray-500 text-sm italic text-center py-4">No data available</p>
+                    readOnly ? null : <p className="text-gray-500 text-sm italic text-center py-4">No data available</p>
                 )}
 
                 {items.map((item) => (

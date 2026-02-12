@@ -18,6 +18,12 @@ export interface IDashboardData extends Document {
         link: string;
         type: string;
     }>;
+    layout: Array<{
+        id: string;
+        type: 'payment' | 'metric' | 'resource' | 'custom';
+        title: string;
+        data: any;
+    }>;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -44,6 +50,12 @@ const DashboardDataSchema: Schema = new Schema({
         label: String,
         link: String,
         type: { type: String, default: 'link' }
+    }],
+    layout: [{
+        id: String,
+        type: { type: String, enum: ['payment', 'metric', 'resource', 'custom'] },
+        title: String,
+        data: Schema.Types.Mixed
     }]
 }, { timestamps: true });
 

@@ -17,29 +17,7 @@ const Login = () => {
         setLoading(true);
         setError('');
 
-        // Mock Login Logic for Testing
-        if (email === 'admin@helios.com' || email === 'client@helios.com') {
-            setTimeout(() => {
-                const isAdmin = email === 'admin@helios.com';
-                const mockUser = {
-                    role: isAdmin ? 'admin' : 'client',
-                    name: isAdmin ? 'Admin User' : 'Client User',
-                    clientId: isAdmin ? null : '1'
-                };
-                const mockToken = 'mock-jwt-token';
 
-                localStorage.setItem('token', mockToken);
-                localStorage.setItem('user', JSON.stringify(mockUser));
-
-                if (isAdmin) {
-                    navigate('/admin/dashboard');
-                } else {
-                    navigate('/client/dashboard');
-                }
-                setLoading(false);
-            }, 1000);
-            return;
-        }
 
         try {
             const response = await api.post('/auth/login', { email, password });
@@ -56,11 +34,9 @@ const Login = () => {
                 navigate('/client/dashboard');
             }
         } catch (err) {
-            setError(err.response?.data?.msg || 'Login failed. Try admin@helios.com / client@helios.com for demo.');
+            setError(err.response?.data?.message || err.response?.data?.msg || 'Login failed.');
         } finally {
-            if (email !== 'admin@helios.com' && email !== 'client@helios.com') {
-                setLoading(false);
-            }
+            setLoading(false);
         }
     };
 
