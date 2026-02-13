@@ -5,6 +5,7 @@ export interface ICalendarEntry extends Document {
     date: Date;
     status: 'green' | 'yellow' | 'red';
     details?: string;
+    notes?: { text: string; status: 'green' | 'yellow' | 'red'; createdAt: Date }[];
     createdBy?: mongoose.Types.ObjectId;
     createdAt: Date;
     updatedAt: Date;
@@ -23,6 +24,15 @@ const CalendarEntrySchema: Schema = new Schema({
         required: true
     },
     details: { type: String },
+    notes: [{
+        text: { type: String, required: true },
+        status: {
+            type: String,
+            enum: ['green', 'yellow', 'red'],
+            default: 'green'
+        },
+        createdAt: { type: Date, default: Date.now }
+    }],
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });
 

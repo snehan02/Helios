@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { isSameDay } from 'date-fns';
 import StatusCalendar from '../../components/Calendar/StatusCalendar';
+import TimelineView from '../../components/Dashboard/TimelineView';
 import InfoBox from '../../components/Dashboard/InfoBox';
 import api from '../../api/axios';
 
@@ -111,22 +112,25 @@ const ClientDashboard = () => {
                         onClick={handleBlocked}
                         className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg shadow-[0_0_15px_rgba(239,68,68,0.5)] transition-all transform hover:scale-105 active:scale-95 animate-pulse"
                     >
-                        I'm Blocked ✋
+                        Road Blocked
                     </button>
                 </div>
 
                 <div className="flex-1">
                     <StatusCalendar events={events} role="client" />
                 </div>
+
+                {/* Timeline Section */}
+                <div className="mt-8">
+                    <TimelineView events={events} />
+                </div>
             </div>
 
             {/* Info Boxes Section - Takes up 1/3 width */}
             <div className="flex flex-col gap-6 lg:h-full lg:overflow-y-auto custom-scrollbar pr-2">
                 {layout.map((widget) => {
-                    // Filter out empty widgets if strictly required, but usually we want to show what Admin configured
-                    // But requirement says "If a box is empty, it shouldn't show up."
-                    // Let's implement that check.
-                    if (!widget.data || widget.data.length === 0) return null;
+                    // Filter out empty widgets, but ALWAYS show Campaign Links (resources)
+                    if ((!widget.data || widget.data.length === 0) && widget.type !== 'resource') return null;
 
                     return (
                         <InfoBox

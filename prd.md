@@ -5,7 +5,7 @@ Here is the comprehensive **prd.txt** tailored to your specific backend and dash
 # Project Helios - Product Requirements Document (PRD)
 
 **Project Name:** Project Helios
-**Version:** 2.0
+**Version:** 2.1
 **Scope:** Full-Stack Implementation (Admin & Client Dashboards)
 
 ## 1. Executive Summary
@@ -84,32 +84,23 @@ Project Helios is a high-end client portal designed to replace static checklists
 * **Admin Functionality (Write):**
 * 
 **Log Work:** Select Date + Client → Assign Status Color + Add Notes.
-
+* **Add Multiple Notes:** A "plus" button to add multiple distinct notes for a single calendar entry. **Multi-status:** If multiple notes exist with different statuses, display colored dots for each status instead of a single block color.
 
 * **Status Logic:**
-* 
-**Green:** Task Completed.
+* **Green:** Task Completed (or Note Status).
+* **Yellow:** Blocked (Waiting on Client) (or Note Status).
+* **Red:** Agency Delay/Failure (or Note Status).
 
 
 * 
-**Yellow:** Blocked (Waiting on Client).
-
-
-* 
-**Red:** Agency Delay/Failure.
-
-
-
-
-* 
-**Detail View:** Input specific task details (e.g., SEO stats, links) for the popup.
+**Detail View:** Input specific task details (e.g., SEO stats, links) for the popup. Allows adding notes with specific status.
 
 
 
 
 * **Client Functionality (Read):**
 * 
-**Fetch Calendar:** `GET /api/calendar?month=X` returns the visual grid of colored status blocks.
+**Fetch Calendar:** `GET /api/calendar?month=X` returns the visual grid of colored status blocks or dots.
 
 
 * 
@@ -179,3 +170,11 @@ Project Helios is a high-end client portal designed to replace static checklists
 
 * 
 **Privacy:** Strict Row-Level Security (RLS) in the database to prevent cross-client data leakage.
+
+## 6. UI/UX Enhancements
+
+* **Dark Mode:** Implement a system-wide dark mode toggle.
+    - Default to user preference or light mode.
+    - Persist preference across sessions.
+    - **Attributes:** Placed in the top Header bar (Admin & Client Dashboards).
+    - Apply to all components (Dashboard, Calendar, Login).

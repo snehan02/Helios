@@ -38,7 +38,7 @@ router.get('/:clientId', authenticate, async (req: any, res: any) => {
 // Add/Update calendar entry (Admin or Client for Blocked status)
 router.post('/', authenticate, async (req: any, res: any) => {
     try {
-        const { clientId, date, status, details } = req.body;
+        const { clientId, date, status, details, notes } = req.body;
 
         // Security Check
         if (req.user.role === 'client') {
@@ -67,6 +67,7 @@ router.post('/', authenticate, async (req: any, res: any) => {
             {
                 status,
                 details,
+                notes,
                 createdBy: req.user.id
             },
             { new: true, upsert: true, setDefaultsOnInsert: true }
