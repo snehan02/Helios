@@ -102,9 +102,9 @@ router.put('/:clientId/layout', authenticate, authorize(['admin']), async (req: 
         );
 
         res.json(dashboardData);
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error updating layout:', error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 });
 

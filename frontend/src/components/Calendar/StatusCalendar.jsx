@@ -3,7 +3,7 @@ import {
     format, startOfMonth, endOfMonth, startOfWeek, endOfWeek,
     eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths
 } from 'date-fns';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import clsx from 'clsx';
 
@@ -13,7 +13,6 @@ const StatusCalendar = ({ events, onDateClick, onSave, role = 'client' }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({ status: 'green', details: '' });
 
-    // Reset editing state when popup closes or date changes
     const resetForm = () => {
         setIsEditing(false);
         setFormData({ status: 'green', details: '' });
@@ -23,31 +22,16 @@ const StatusCalendar = ({ events, onDateClick, onSave, role = 'client' }) => {
     const endDate = endOfWeek(endOfMonth(currentMonth));
     const days = eachDayOfInterval({ start: startDate, end: endDate });
 
-    const getStatusColor = (date) => {
-        const event = events.find(e => isSameDay(new Date(e.date), date));
-        if (!event) return 'bg-gray-800 hover:bg-gray-700';
-
-        switch (event.status) {
-            case 'green': return 'bg-green-500 hover:bg-green-600 shadow-[0_0_15px_rgba(34,197,94,0.4)]';
-            case 'yellow': return 'bg-yellow-500 hover:bg-yellow-600 shadow-[0_0_15px_rgba(234,179,8,0.4)]';
-            case 'red': return 'bg-red-500 hover:bg-red-600 shadow-[0_0_15px_rgba(239,68,68,0.4)]';
-            default: return 'bg-gray-800 hover:bg-gray-700';
-        }
+    const getEventsForDay = (date) => {
+        return (events || []).filter(e => isSameDay(new Date(e.date), date));
     };
 
     const handleDateClick = (date) => {
-        const event = events.find(e => isSameDay(new Date(e.date), date));
-
+        const dayEvents = getEventsForDay(date);
         if (onDateClick) {
-            onDateClick(date, event);
+            onDateClick(date, dayEvents);
         } else {
-            setSelectedDate({ date, event });
-            // Pre-fill form if event exists
-            if (event) {
-                setFormData({ status: event.status, details: event.details || '' });
-            } else {
-                setFormData({ status: 'green', details: '' });
-            }
+            setSelectedDate({ date, dayEvents });
         }
     };
 
@@ -64,38 +48,44 @@ const StatusCalendar = ({ events, onDateClick, onSave, role = 'client' }) => {
     };
 
     const statusOptions = [
-        { value: 'green', label: 'Completed', color: 'bg-green-500', hover: 'hover:bg-green-600', text: 'text-green-400' },
-        { value: 'yellow', label: 'Blocked', color: 'bg-yellow-500', hover: 'hover:bg-yellow-600', text: 'text-yellow-400' },
-        { value: 'red', label: 'Delayed', color: 'bg-red-500', hover: 'hover:bg-red-600', text: 'text-red-400' },
+        { value: 'green', label: 'Completed', color: 'bg-emerald-400/10', text: 'text-emerald-400', border: 'border-emerald-400/30' },
+        { value: 'yellow', label: 'Blocked', color: 'bg-amber-400/10', text: 'text-amber-400', border: 'border-amber-400/30' },
+        { value: 'red', label: 'Delayed', color: 'bg-rose-400/10', text: 'text-rose-400', border: 'border-rose-400/30' },
     ];
 
+    const getStatusStyles = (status) => {
+        return statusOptions.find(o => o.value === status) || statusOptions[0];
+    };
+
     return (
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-2xl relative">
-            {/* Calendar Header */}
-            <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-white capitalize">
-                    {format(currentMonth, 'MMMM yyyy')}
+        <div className="bg-slate-900 border border-slate-400/20 rounded-2xl p-6 shadow-[0_0_50px_rgba(0,0,0,0.5)] relative overflow-hidden">
+            {/* Glossy Background Effect */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-slate-400/30 to-transparent" />
+
+            <div className="flex items-center justify-between mb-8">
+                <h2 className="text-2xl font-light text-slate-100 tracking-tight">
+                    <span className="font-bold text-white mr-2">{format(currentMonth, 'MMMM')}</span>
+                    <span className="text-slate-400">{format(currentMonth, 'yyyy')}</span>
                 </h2>
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                     <button
                         onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-                        className="p-2 hover:bg-gray-800 rounded-full text-gray-400 hover:text-white transition-colors"
+                        className="p-2.5 bg-slate-800/50 hover:bg-slate-700 border border-slate-700 rounded-xl text-slate-400 hover:text-white transition-all shadow-lg"
                     >
-                        <ChevronLeft size={20} />
+                        <ChevronLeft size={18} />
                     </button>
                     <button
                         onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                        className="p-2 hover:bg-gray-800 rounded-full text-gray-400 hover:text-white transition-colors"
+                        className="p-2.5 bg-slate-800/50 hover:bg-slate-700 border border-slate-700 rounded-xl text-slate-400 hover:text-white transition-all shadow-lg"
                     >
-                        <ChevronRight size={20} />
+                        <ChevronRight size={18} />
                     </button>
                 </div>
             </div>
 
-            {/* Days Grid */}
-            <div className="grid grid-cols-7 gap-4 mb-2">
+            <div className="grid grid-cols-7 gap-4 mb-4">
                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                    <div key={day} className="text-center text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    <div key={day} className="text-center text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                         {day}
                     </div>
                 ))}
@@ -104,67 +94,103 @@ const StatusCalendar = ({ events, onDateClick, onSave, role = 'client' }) => {
             <div className="grid grid-cols-7 gap-4">
                 {days.map((day, idx) => {
                     const isCurrentMonth = isSameMonth(day, currentMonth);
+                    const dayEvents = getEventsForDay(day);
+
+                    // Logic: If all logs have the same status, fill the cell.
+                    // If logs have different statuses, show dots.
+                    const hasUniformStatus = dayEvents.length > 0 && dayEvents.every(e => e.status === dayEvents[0].status);
+                    const uniformStatusStyle = hasUniformStatus ? getStatusStyles(dayEvents[0].status) : null;
+
                     return (
                         <motion.div
                             key={day.toISOString()}
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: idx * 0.01 }}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: idx * 0.005 }}
                             onClick={() => handleDateClick(day)}
                             className={clsx(
-                                "aspect-square rounded-xl flex items-center justify-center cursor-pointer transition-all duration-300 relative group",
-                                getStatusColor(day),
-                                !isCurrentMonth && "opacity-30"
+                                "aspect-square rounded-xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300 relative group overflow-hidden border",
+                                isCurrentMonth ? "border-slate-700/50 hover:border-slate-400/40" : "opacity-20 pointer-events-none",
+                                hasUniformStatus ? `${uniformStatusStyle.color} ${uniformStatusStyle.border}` : "bg-slate-800/30",
+                                !hasUniformStatus && isCurrentMonth && "hover:bg-slate-800/60"
                             )}
                         >
                             <span className={clsx(
-                                "text-sm font-semibold z-10",
-                                getStatusColor(day).includes('gray') ? 'text-gray-400 group-hover:text-white' : 'text-white'
+                                "text-sm font-medium transition-colors z-10",
+                                hasUniformStatus ? "text-white" : "text-slate-300 group-hover:text-white"
                             )}>
                                 {format(day, 'd')}
                             </span>
+
+                            {/* Show dots ONLY if statuses are NOT uniform (i.e. different colored dots) */}
+                            {!hasUniformStatus && dayEvents.length > 0 && (
+                                <div className="flex gap-1 mt-1.5 justify-center flex-wrap px-1">
+                                    {dayEvents.map((e, i) => (
+                                        <div
+                                            key={e._id || i}
+                                            className={clsx(
+                                                "w-1.5 h-1.5 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.5)]",
+                                                e.status === 'green' ? 'bg-emerald-400 shadow-[0_0_8px_#34d399]' :
+                                                    e.status === 'yellow' ? 'bg-amber-400 shadow-[0_0_8px_#fbbf24]' :
+                                                        'bg-rose-400 shadow-[0_0_8px_#fb7185]'
+                                            )}
+                                        />
+                                    ))}
+                                </div>
+                            )}
                         </motion.div>
                     );
                 })}
             </div>
 
-            {/* Detail Popup */}
             <AnimatePresence>
                 {selectedDate && (
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="absolute inset-0 z-20 flex items-center justify-center bg-black/60 backdrop-blur-sm rounded-2xl"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4"
                         onClick={closePopup}
                     >
-                        <div
-                            className="bg-gray-800 border border-gray-700 p-6 rounded-xl w-80 shadow-2xl"
+                        <motion.div
+                            initial={{ scale: 0.9, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            className="bg-slate-900/95 border border-slate-400/20 p-10 rounded-[2.5rem] w-full max-w-lg shadow-[0_40px_80px_rgba(0,0,0,0.7)] relative overflow-hidden"
                             onClick={e => e.stopPropagation()}
                         >
-                            <div className="flex justify-between items-start mb-4">
-                                <h3 className="text-xl font-bold text-white">
-                                    {format(selectedDate.date, 'MMM d, yyyy')}
-                                </h3>
-                                <button onClick={closePopup} className="text-gray-400 hover:text-white">
-                                    <X size={20} />
+                            {/* Modal Silver Glow */}
+                            <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-slate-400/40 to-transparent" />
+
+                            <div className="flex justify-between items-start mb-10">
+                                <div>
+                                    <h3 className="text-4xl font-black text-white tracking-tighter mb-2">
+                                        {format(selectedDate.date, 'MMMM d')}
+                                    </h3>
+                                    <p className="text-slate-500 font-black text-xs uppercase tracking-[0.3em] flex items-center gap-2">
+                                        Project Timeline <span className="w-4 h-[1px] bg-slate-800" /> {format(selectedDate.date, 'yyyy')}
+                                    </p>
+                                </div>
+                                <button onClick={closePopup} className="p-3 bg-slate-800/50 hover:bg-slate-700 border border-slate-700/50 rounded-2xl text-slate-400 hover:text-white transition-all shadow-xl group">
+                                    <X size={20} className="group-hover:rotate-90 transition-transform duration-300" />
                                 </button>
                             </div>
 
                             {isEditing ? (
-                                <div className="space-y-4">
+                                <div className="space-y-6">
                                     <div>
-                                        <label className="block text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Status</label>
-                                        <div className="flex gap-2">
+                                        <label className="block text-slate-400 text-xs font-bold uppercase tracking-widest mb-4">Select Status</label>
+                                        <div className="flex gap-3">
                                             {statusOptions.map((option) => (
                                                 <button
                                                     key={option.value}
                                                     onClick={() => setFormData({ ...formData, status: option.value })}
                                                     className={clsx(
-                                                        "flex-1 py-2 rounded-lg text-sm font-bold transition-all border-2",
+                                                        "flex-1 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border-2",
                                                         formData.status === option.value
-                                                            ? `border-white ${option.color} text-black` // Active state
-                                                            : `border-transparent bg-gray-700 text-gray-400 hover:bg-gray-600` // Inactive state
+                                                            ? option.value === 'green' ? 'bg-green-400/20 border-green-400/50 text-green-400 shadow-[0_10px_30px_rgba(74,222,128,0.2)] scale-105' :
+                                                                option.value === 'yellow' ? 'bg-yellow-400/20 border-yellow-400/50 text-yellow-400 shadow-[0_10px_30px_rgba(250,204,21,0.2)] scale-105' :
+                                                                    'bg-red-400/20 border-red-400/50 text-red-400 shadow-[0_10px_30px_rgba(248,113,113,0.2)] scale-105'
+                                                            : `border-slate-800 bg-slate-800/20 text-slate-500 hover:border-slate-700/50 hover:bg-slate-800/40`
                                                     )}
                                                 >
                                                     {option.label}
@@ -174,76 +200,84 @@ const StatusCalendar = ({ events, onDateClick, onSave, role = 'client' }) => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-gray-400 text-xs font-bold uppercase tracking-wider mb-2">Notes</label>
+                                        <label className="block text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">Logs & Details</label>
                                         <textarea
                                             value={formData.details}
                                             onChange={(e) => setFormData({ ...formData, details: e.target.value })}
-                                            className="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors resize-none h-24"
-                                            placeholder="What happened today?"
+                                            className="w-full bg-slate-800/50 border border-slate-700 rounded-xl p-4 text-white text-sm focus:outline-none focus:border-slate-400 focus:ring-1 focus:ring-slate-400 transition-all resize-none h-32 placeholder:text-slate-600"
+                                            placeholder="Description of the log..."
                                         />
                                     </div>
 
-                                    <div className="flex justify-end gap-2 pt-2">
+                                    <div className="flex justify-end gap-3 pt-4">
                                         <button
                                             onClick={() => setIsEditing(false)}
-                                            className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+                                            className="px-6 py-3 text-sm font-medium text-slate-400 hover:text-white transition-colors"
                                         >
                                             Cancel
                                         </button>
                                         <button
                                             onClick={handleSave}
-                                            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-lg transition-colors"
+                                            className="px-8 py-3 bg-white text-slate-900 text-sm font-bold rounded-xl transition-all hover:bg-slate-200 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                                         >
-                                            Save Log
+                                            Save Changes
                                         </button>
                                     </div>
                                 </div>
                             ) : (
-                                <>
-                                    {selectedDate.event ? (
-                                        <div className="space-y-3">
-                                            <div className="flex items-center justify-between">
-                                                <div className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${selectedDate.event.status === 'green' ? 'bg-green-500/20 text-green-400' :
-                                                    selectedDate.event.status === 'yellow' ? 'bg-yellow-500/20 text-yellow-400' :
-                                                        'bg-red-500/20 text-red-400'
-                                                    }`}>
-                                                    {selectedDate.event.status === 'green' ? 'Completed' :
-                                                        selectedDate.event.status === 'yellow' ? 'Blocked' : 'Delayed'}
-                                                </div>
-                                                {role === 'admin' && (
-                                                    <button
-                                                        onClick={() => setIsEditing(true)}
-                                                        className="text-xs text-blue-400 hover:text-blue-300 hover:underline"
-                                                    >
-                                                        Edit
-                                                    </button>
-                                                )}
+                                <div className="space-y-6">
+                                    <div className="max-h-[300px] overflow-y-auto pr-2 custom-scrollbar-silver space-y-4">
+                                        {selectedDate.dayEvents.length > 0 ? (
+                                            selectedDate.dayEvents.map((e, i) => {
+                                                const styles = getStatusStyles(e.status);
+                                                return (
+                                                    <div key={e._id || i} className="p-5 bg-slate-900/40 border border-slate-400/10 rounded-2xl group relative hover:border-slate-400/30 transition-all duration-300 shadow-xl">
+                                                        <div className="flex items-center justify-between mb-3">
+                                                            <div className={clsx("px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.15em] border backdrop-blur-md", styles.color, styles.text, styles.border)}>
+                                                                {styles.label}
+                                                            </div>
+                                                            <button
+                                                                onClick={() => {
+                                                                    setFormData({ status: e.status, details: e.details || '', id: e._id });
+                                                                    setIsEditing(true);
+                                                                }}
+                                                                className="text-[10px] text-slate-500 hover:text-white underline underline-offset-4 decoration-slate-700 hover:decoration-slate-400 uppercase tracking-widest font-black transition-all"
+                                                            >
+                                                                Edit Entry
+                                                            </button>
+                                                        </div>
+                                                        <p className="text-slate-300 text-sm leading-relaxed font-medium">
+                                                            {e.details || 'No details provided.'}
+                                                        </p>
+                                                    </div>
+                                                );
+                                            })
+                                        ) : (
+                                            <div className="text-center py-16 bg-slate-900/20 border border-dashed border-slate-800 rounded-3xl">
+                                                <p className="text-slate-500 text-sm font-medium">No activity logged yet.</p>
                                             </div>
-                                            <p className="text-gray-300 text-sm leading-relaxed">
-                                                {selectedDate.event.details || 'No details provided.'}
-                                            </p>
-                                        </div>
-                                    ) : (
-                                        <div className="text-center py-4">
-                                            <p className="text-gray-500 text-sm">No status logged for this date.</p>
-                                            {role === 'admin' && (
-                                                <button
-                                                    onClick={() => setIsEditing(true)}
-                                                    className="mt-4 px-4 py-2 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 rounded-lg text-sm font-medium transition-colors border border-blue-500/30"
-                                                >
-                                                    Log Status
-                                                </button>
-                                            )}
-                                        </div>
-                                    )}
-                                </>
+                                        )}
+                                    </div>
+
+                                    <button
+                                        onClick={() => {
+                                            setFormData({ status: 'green', details: '', id: null });
+                                            setIsEditing(true);
+                                        }}
+                                        className="w-full py-5 mt-6 bg-slate-800/80 border border-slate-400/20 text-white rounded-2xl text-xs font-black uppercase tracking-[0.2em] transition-all hover:bg-slate-700 hover:border-slate-400/40 flex items-center justify-center gap-3 group shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.5)]"
+                                    >
+                                        <Plus size={16} className="group-hover:rotate-90 transition-transform duration-500" />
+                                        Log New Status
+                                    </button>
+                                </div>
                             )}
-                        </div>
+                        </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
         </div>
     );
 };
+
 
 export default StatusCalendar;

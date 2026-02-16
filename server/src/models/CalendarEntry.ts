@@ -26,7 +26,7 @@ const CalendarEntrySchema: Schema = new Schema({
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true });
 
-// Ensure one entry per client per day
-CalendarEntrySchema.index({ client: 1, date: 1 }, { unique: true });
+// Allow multiple entries per client per day
+CalendarEntrySchema.index({ client: 1, date: 1 });
 
 export default mongoose.model<ICalendarEntry>('CalendarEntry', CalendarEntrySchema);

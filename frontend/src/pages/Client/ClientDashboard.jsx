@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { isSameDay } from 'date-fns';
+import { RefreshCw } from 'lucide-react';
 import StatusCalendar from '../../components/Calendar/StatusCalendar';
 import InfoBox from '../../components/Dashboard/InfoBox';
 import api from '../../api/axios';
@@ -9,39 +10,29 @@ const ClientDashboard = () => {
     const [events, setEvents] = useState([]);
     const [clientId, setClientId] = useState(null);
     const [clientName, setClientName] = useState('');
-
-    const [boxData, setBoxData] = useState({
-        payments: [],
-        metrics: [],
-        resources: []
-    });
     const [layout, setLayout] = useState([]);
 
+    const fetchCalendarEvents = (userId) => {
+        api.get(`/calendar/${userId}`)
+            .then(res => setEvents(res.data))
+            .catch(err => console.error(err));
+    };
+
     useEffect(() => {
-        // Fetch current user/client info
-        // In a real app, this would come from a Context or Redux store
         const userStr = localStorage.getItem('user');
         if (userStr) {
             const user = JSON.parse(userStr);
-            // Assuming the user object has a clientId field (it should if structured correctly on login)
-            // If not, we might need to fetch /me endpoint
             if (user.clientId) {
                 setClientId(user.clientId);
-                // Also fetch client details to get name
                 api.get(`/clients/${user.clientId}`)
                     .then(res => setClientName(res.data.name))
                     .catch(err => console.error(err));
 
-                // Fetch calendar events
-                api.get(`/calendar/${user.clientId}`)
-                    .then(res => setEvents(res.data))
-                    .catch(err => console.error(err));
+                fetchCalendarEvents(user.clientId);
 
-                // Fetch Dashboard Data (InfoBoxes)
                 api.get(`/dashboard/${user.clientId}`)
                     .then(res => {
                         const data = res.data;
-                        // Use dynamic layout if available, otherwise fallback
                         if (data.layout && data.layout.length > 0) {
                             setLayout(data.layout);
                         } else {
@@ -53,6 +44,11 @@ const ClientDashboard = () => {
                         }
                     })
                     .catch(err => console.error(err));
+
+                const intervalId = setInterval(() => {
+                    fetchCalendarEvents(user.clientId);
+                }, 10000);
+                return () => clearInterval(intervalId);
             }
         }
     }, []);
@@ -64,83 +60,114 @@ const ClientDashboard = () => {
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, '0');
         const day = String(now.getDate()).padStart(2, '0');
-        const today = `${year}-${month}-${day}`;
+        const todayStr = `${year}-${month}-${day}`;
 
         try {
             const response = await api.post('/calendar', {
                 clientId: clientId,
-                date: today,
+                date: todayStr,
                 status: 'yellow',
                 details: 'Client reported a blocker via Dashboard.'
             });
 
-            // Update local state with the returned entry from server
             const newEntry = response.data;
-            setEvents(prev => {
-                const exists = prev.find(e => isSameDay(new Date(e.date), new Date(newEntry.date)));
-                if (exists) {
-                    return prev.map(e => isSameDay(new Date(e.date), new Date(newEntry.date)) ? newEntry : e);
-                }
-                return [...prev, newEntry];
-            });
-
-            alert("Status updated: You have marked today as blocked. The team has been notified.");
+            setEvents(prev => [...prev.filter(e => e._id !== newEntry._id), newEntry]);
+            alert("Team Notified: We've logged your blocker and will look into it immediately.");
         } catch (error) {
             console.error("Error marking as blocked:", error);
-            alert("Failed to update status. Please try again.");
+            alert("Blocked report failed. Please try again.");
         }
     };
 
-    // Mock data for InfoBox removed, now using state initialized above
+    const handleCalendarSave = async (date, formData) => {
+        if (!clientId) return;
+        try {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const dateStr = `${year}-${month}-${day}`;
 
-    // Client cannot click to add events, but StatusCalendar handles clicks to show details
-    // StatusCalendar handles clicks natively for showing the popup.
-    // We just need to make sure we don't pass an onDateClick handler that opens an edit modal.
-    // By default StatusCalendar shows details popup on click.
+            const response = await api.post('/calendar', {
+                clientId: clientId,
+                date: dateStr,
+                ...formData
+            });
+
+            const newEntry = response.data;
+            setEvents(prev => {
+                const exists = prev.find(e => e._id === newEntry._id);
+                if (exists) return prev.map(e => e._id === newEntry._id ? newEntry : e);
+                return [...prev, newEntry];
+            });
+            alert("Status logged successfully!");
+        } catch (error) {
+            alert("Failed to save: " + (error.response?.data?.error || error.message));
+        }
+    };
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-[calc(100vh-8rem)]">
-            {/* Calendar Section - Takes up 2/3 width */}
-            <div className="lg:col-span-2 flex flex-col">
-                <div className="mb-6 flex justify-between items-end">
-                    <div>
-                        <h1 className="text-3xl font-bold text-white mb-2">My Dashboard</h1>
-                        <p className="text-gray-400">Welcome back, {clientName || 'Partner'}</p>
+        <div className="min-h-[calc(100vh-8rem)] bg-slate-950 p-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 h-full">
+                {/* Main Content: Calendar */}
+                <div className="lg:col-span-2 flex flex-col group">
+                    <div className="mb-10 flex justify-between items-end bg-slate-900/40 p-8 rounded-3xl border border-slate-400/10 relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-slate-400/30 to-transparent" />
+                        <div>
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399]" />
+                                <h1 className="text-3xl font-black text-white tracking-tighter">PROJECT HUB</h1>
+                            </div>
+                            <p className="text-slate-500 font-medium text-sm flex items-center gap-2">
+                                Welcome, <span className="text-slate-300 capitalize">{clientName || 'Partner'}</span>
+                            </p>
+                        </div>
+
+                        <div className="flex gap-4">
+                            <button
+                                onClick={() => clientId && fetchCalendarEvents(clientId)}
+                                className="px-5 py-3 bg-slate-800/50 hover:bg-slate-700 border border-slate-700 rounded-2xl text-slate-400 hover:text-white transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-widest shadow-xl"
+                            >
+                                <RefreshCw size={14} className="animate-spin-slow" />
+                                Sync
+                            </button>
+                            <button
+                                onClick={handleBlocked}
+                                className="px-6 py-3 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-[0_10px_30px_rgba(244,63,94,0.1)] hover:scale-105 active:scale-95"
+                            >
+                                Report Blocker
+                            </button>
+                        </div>
                     </div>
-                    <button
-                        onClick={handleBlocked}
-                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg shadow-[0_0_15px_rgba(239,68,68,0.5)] transition-all transform hover:scale-105 active:scale-95 animate-pulse"
-                    >
-                        I'm Blocked ✋
-                    </button>
+
+                    <div className="flex-1 bg-slate-900/20 rounded-3xl overflow-hidden">
+                        <StatusCalendar events={events} onSave={handleCalendarSave} role="client" />
+                    </div>
                 </div>
 
-                <div className="flex-1">
-                    <StatusCalendar events={events} role="client" />
+                {/* Sidebar: Widgets */}
+                <div className="flex flex-col gap-8 lg:h-full lg:overflow-y-auto custom-scrollbar-silver pr-2">
+                    <div className="bg-slate-900/40 p-6 rounded-2xl border border-slate-400/10 mb-2">
+                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Quick Access</p>
+                        <h2 className="text-lg font-bold text-white tracking-tight">Project Assets</h2>
+                    </div>
+                    {layout.map((widget) => {
+                        if (!widget.data || widget.data.length === 0) return null;
+                        return (
+                            <div key={widget.id} className="transform transition-all duration-500 hover:translate-x-2">
+                                <InfoBox
+                                    title={widget.title}
+                                    type={widget.type}
+                                    data={widget.data}
+                                    readOnly={true}
+                                />
+                            </div>
+                        );
+                    })}
                 </div>
-            </div>
-
-            {/* Info Boxes Section - Takes up 1/3 width */}
-            <div className="flex flex-col gap-6 lg:h-full lg:overflow-y-auto custom-scrollbar pr-2">
-                {layout.map((widget) => {
-                    // Filter out empty widgets if strictly required, but usually we want to show what Admin configured
-                    // But requirement says "If a box is empty, it shouldn't show up."
-                    // Let's implement that check.
-                    if (!widget.data || widget.data.length === 0) return null;
-
-                    return (
-                        <InfoBox
-                            key={widget.id}
-                            title={widget.title}
-                            type={widget.type}
-                            data={widget.data}
-                            readOnly={true}
-                        />
-                    );
-                })}
             </div>
         </div>
     );
 };
+
 
 export default ClientDashboard;

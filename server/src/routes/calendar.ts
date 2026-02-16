@@ -35,20 +35,16 @@ router.get('/:clientId', authenticate, async (req: any, res: any) => {
     }
 });
 
-// Add/Update calendar entry (Admin or Client for Blocked status)
+// Add/Update calendar entry
 router.post('/', authenticate, async (req: any, res: any) => {
     try {
-        const { clientId, date, status, details } = req.body;
+        const { clientId, date, status, details, id } = req.body;
 
         // Security Check
         if (req.user.role === 'client') {
             // Client can only update their own calendar
             if (req.user.clientId.toString() !== clientId) {
                 return res.status(403).json({ message: 'Access denied: You can only update your own calendar.' });
-            }
-            // Client can only set status to 'yellow' (Blocked)
-            if (status !== 'yellow') {
-                return res.status(403).json({ message: 'Access denied: Clients can only mark themselves as blocked.' });
             }
         }
 
@@ -61,26 +57,34 @@ router.post('/', authenticate, async (req: any, res: any) => {
         const d = new Date(date);
         const entryDate = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
 
-        // Upsert logic: Update if exists, Create if not
-        const entry = await CalendarEntry.findOneAndUpdate(
-            { client: clientId, date: entryDate },
-            {
+        let entry;
+        if (id) {
+            // Update existing entry
+            entry = await CalendarEntry.findByIdAndUpdate(
+                id,
+                { status, details, updatedAt: new Date() },
+                { new: true }
+            );
+        } else {
+            // Create new entry
+            entry = new CalendarEntry({
+                client: clientId,
+                date: entryDate,
                 status,
                 details,
                 createdBy: req.user.id
-            },
-            { new: true, upsert: true, setDefaultsOnInsert: true }
-        );
+            });
+            await entry.save();
+        }
 
         if (status === 'yellow') {
-            // TODO: Real notification implementation (Email/Push/Socket)
             console.log(`[NOTIFICATION] Client ${client.name} is BLOCKED on ${date}. Details: ${details}`);
         }
 
         res.json(entry);
-    } catch (error) {
-        console.error('Error saving calendar entry:', error);
-        res.status(500).json({ message: 'Server error' });
+    } catch (error: any) {
+        console.error('SERVER ERROR SAVING CALENDAR:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
     }
 });
 
