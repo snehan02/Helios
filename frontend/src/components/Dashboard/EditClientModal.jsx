@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { X, Upload, Palette, Loader } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import api from '../../api/axios';
+import api, { BASE_URL } from '../../api/axios';
 
 const EditClientModal = ({ isOpen, onClose, onSave, client }) => {
     const fileInputRef = useRef(null);
@@ -27,7 +27,7 @@ const EditClientModal = ({ isOpen, onClose, onSave, client }) => {
                 logo: null
             });
             if (client.logoUrl) {
-                setPreviewUrl(`http://localhost:5000${client.logoUrl}`);
+                setPreviewUrl(`${BASE_URL}${client.logoUrl}`);
             } else {
                 setPreviewUrl('');
             }

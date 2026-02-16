@@ -5,6 +5,12 @@ import StatusCalendar from '../../components/Calendar/StatusCalendar';
 import InfoBox from '../../components/Dashboard/InfoBox';
 import api from '../../api/axios';
 
+const fixDate = (dateStr) => {
+    if (!dateStr) return new Date();
+    const d = new Date(dateStr);
+    return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+};
+
 const ClientDashboard = () => {
     // State
     const [events, setEvents] = useState([]);
@@ -14,7 +20,13 @@ const ClientDashboard = () => {
 
     const fetchCalendarEvents = (userId) => {
         api.get(`/calendar/${userId}`)
-            .then(res => setEvents(res.data))
+            .then(res => {
+                const formattedEvents = res.data.map(e => ({
+                    ...e,
+                    date: fixDate(e.date)
+                }));
+                setEvents(formattedEvents);
+            })
             .catch(err => console.error(err));
     };
 
@@ -71,7 +83,12 @@ const ClientDashboard = () => {
             });
 
             const newEntry = response.data;
+            newEntry.date = fixDate(newEntry.date);
             setEvents(prev => [...prev.filter(e => e._id !== newEntry._id), newEntry]);
+
+            // Refresh calendar to ensure sync
+            fetchCalendarEvents(clientId);
+
             alert("Team Notified: We've logged your blocker and will look into it immediately.");
         } catch (error) {
             console.error("Error marking as blocked:", error);
@@ -94,11 +111,16 @@ const ClientDashboard = () => {
             });
 
             const newEntry = response.data;
+            newEntry.date = fixDate(newEntry.date);
             setEvents(prev => {
                 const exists = prev.find(e => e._id === newEntry._id);
                 if (exists) return prev.map(e => e._id === newEntry._id ? newEntry : e);
                 return [...prev, newEntry];
             });
+
+            // Refresh calendar to ensure sync
+            fetchCalendarEvents(clientId);
+
             alert("Status logged successfully!");
         } catch (error) {
             alert("Failed to save: " + (error.response?.data?.error || error.message));

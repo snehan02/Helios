@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { LayoutDashboard, Moon, Sun } from 'lucide-react';
 import Sidebar from './Sidebar';
 import { useState, useEffect } from 'react';
-import api from '../../api/axios';
+import api, { BASE_URL } from '../../api/axios';
 import { useTheme } from '../../context/ThemeContext';
 
 const ClientLayout = () => {
@@ -33,7 +33,7 @@ const ClientLayout = () => {
     ];
 
     const branding = clientData ? {
-        logoUrl: clientData.logoUrl ? `http://localhost:5000${clientData.logoUrl}` : null,
+        logoUrl: clientData.logoUrl ? `${BASE_URL}${clientData.logoUrl}` : null,
         name: clientData.name,
         colors: {
             primary: clientData.brandColors?.primary,

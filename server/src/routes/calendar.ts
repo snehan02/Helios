@@ -1,6 +1,7 @@
 import express from 'express';
 import CalendarEntry from '../models/CalendarEntry';
 import Client from '../models/Client';
+import BlockingNotification from '../models/BlockingNotification';
 import { authenticate, authorize } from '../middleware/auth';
 
 const router = express.Router();
@@ -78,7 +79,14 @@ router.post('/', authenticate, async (req: any, res: any) => {
         }
 
         if (status === 'yellow') {
-            console.log(`[NOTIFICATION] Client ${client.name} is BLOCKED on ${date}. Details: ${details}`);
+            const notif = new BlockingNotification({
+                clientId: client._id,
+                blockingDate: entryDate,
+                message: details || 'Client reported a blocker via Dashboard.',
+                createdAt: new Date()
+            });
+            await notif.save();
+            console.log(`[NOTIFICATION] Saved to DB: Client ${client.name} is BLOCKED on ${date}.`);
         }
 
         res.json(entry);

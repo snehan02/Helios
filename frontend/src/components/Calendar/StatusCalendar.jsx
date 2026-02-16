@@ -13,10 +13,7 @@ const StatusCalendar = ({ events, onDateClick, onSave, role = 'client' }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({ status: 'green', details: '' });
 
-    const resetForm = () => {
-        setIsEditing(false);
-        setFormData({ status: 'green', details: '' });
-    };
+    // resetForm moved to avoid duplication
 
     const startDate = startOfWeek(startOfMonth(currentMonth));
     const endDate = endOfWeek(endOfMonth(currentMonth));
