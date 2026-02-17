@@ -1,9 +1,42 @@
+import { UploadButton } from "@uploadthing/react";
+import { X } from "lucide-react";
 import { BASE_URL } from "../api/axios";
 
-// ... inside component
+/**
+ * ImageUpload component
+ * @param {Object} props
+ * @param {string} props.value - The current image URL
+ * @param {Function} props.onChange - Callback when image is uploaded (receives URL)
+ * @param {Function} props.onRemove - Callback when image is removed
+ */
+export const ImageUpload = ({ value, onChange, onRemove, endpoint = "imageUploader" }) => {
+    if (value) {
+        return (
+            <div className="relative w-full h-48 border border-gray-700 rounded-lg overflow-hidden bg-gray-900 flex items-center justify-center group">
+                <div className="absolute top-2 right-2 z-10">
+                    <button
+                        onClick={onRemove}
+                        type="button"
+                        className="bg-red-500 hover:bg-red-600 text-white p-1 rounded-full shadow-lg transition-all"
+                        title="Remove image"
+                    >
+                        <X size={16} />
+                    </button>
+                </div>
+                <img
+                    src={value}
+                    alt="Upload"
+                    className="object-contain h-full w-full"
+                />
+            </div>
+        );
+    }
+
+    return (
+        <div className="w-full border-2 border-dashed border-gray-700 rounded-lg p-6 flex flex-col items-center justify-center bg-gray-900/50 hover:bg-gray-900 transition-colors">
             <UploadButton
                 endpoint={endpoint}
-                url={`${BASE_URL}/api/uploadthing`} // Use dynamic base URL
+                url={`${BASE_URL}/api/uploadthing`}
                 onClientUploadComplete={(res) => {
                     console.log("Files: ", res);
                     if (res && res[0]) {
@@ -19,7 +52,7 @@ import { BASE_URL } from "../api/axios";
                 }}
             />
             <p className="text-gray-400 text-sm mt-2">Upload Image (Max 4MB)</p>
-        </div >
+        </div>
     );
 };
 
