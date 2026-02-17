@@ -7,6 +7,7 @@ import clientRoutes from './routes/clients';
 import { test } from './routes/test';
 import calendarRoutes from './routes/calendar';
 import dashboardRoutes from './routes/dashboard';
+import { uploadThingRouter } from './routes/uploadthing';
 
 dotenv.config();
 
@@ -24,6 +25,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/calendar', calendarRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use(
+    "/api/uploadthing",
+    uploadThingRouter
+);
 
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok' });

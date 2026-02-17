@@ -148,26 +148,11 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
                             {/* Logo Upload */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-300 mb-1">Client Logo</label>
-                                <div
-                                    onClick={() => fileInputRef.current?.click()}
-                                    className="flex items-center justify-center w-full h-24 border-2 border-dashed border-gray-700 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-gray-800/50 transition-all group relative overflow-hidden"
-                                >
-                                    {previewUrl ? (
-                                        <img src={previewUrl} alt="Preview" className="h-full object-contain p-2" />
-                                    ) : (
-                                        <div className="flex flex-col items-center gap-2 text-gray-500 group-hover:text-blue-400">
-                                            <Upload size={24} />
-                                            <span className="text-xs">Click to upload logo</span>
-                                        </div>
-                                    )}
-                                    <input
-                                        type="file"
-                                        ref={fileInputRef}
-                                        onChange={handleFileChange}
-                                        accept="image/*"
-                                        className="hidden"
-                                    />
-                                </div>
+                                <ImageUpload
+                                    value={formData.logoUrl}
+                                    onChange={(url) => setFormData({ ...formData, logoUrl: url })}
+                                    onRemove={() => setFormData({ ...formData, logoUrl: '' })}
+                                />
                             </div>
 
                             {/* Brand Colors */}

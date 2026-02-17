@@ -21,6 +21,7 @@
     "mongoose": "^9.2.0",
     "multer": "^2.0.2",
     "prisma": "^6.3.0",
+    "uploadthing": "^7.7.4",
     "zod": "^4.3.6"
   },
   "devDependencies": {
