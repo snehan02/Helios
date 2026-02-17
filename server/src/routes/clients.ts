@@ -3,41 +3,6 @@ import bcrypt from 'bcryptjs';
 import User from '../models/User';
 import Client from '../models/Client';
 import { authenticate, authorize } from '../middleware/auth';
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-
-// Configure Multer for file uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        const uploadDir = 'uploads/';
-        // Create directory if it doesn't exist
-        if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir);
-        }
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        // Unique filename: client-name-timestamp.ext
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
-
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-    fileFilter: (req, file, cb) => {
-        const filetypes = /jpeg|jpg|png|webp/;
-        const mimetype = filetypes.test(file.mimetype);
-        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-
-        if (mimetype && extname) {
-            return cb(null, true);
-        }
-        cb(new Error("Error: File upload only supports the following filetypes - " + filetypes));
-    }
-});
 
 const router = express.Router();
 
@@ -135,9 +100,9 @@ router.get('/:id', authenticate, async (req: any, res: any) => {
 });
 
 // Update client details
-router.put('/:id', authenticate, authorize(['admin']), upload.single('logo'), async (req: any, res: any) => {
+router.put('/:id', authenticate, authorize(['admin']), async (req: any, res: any) => {
     try {
-        const { name, industry, primaryColor, secondaryColor, status } = req.body;
+        const { name, industry, primaryColor, secondaryColor, status, logoUrl } = req.body;
         const clientId = req.params.id;
 
         const client = await Client.findById(clientId);
@@ -153,9 +118,8 @@ router.put('/:id', authenticate, authorize(['admin']), upload.single('logo'), as
             secondary: secondaryColor || client.brandColors.secondary
         };
 
-        if (req.file) {
-            // Optional: delete old logo file if it exists
-            client.logoUrl = `/uploads/${req.file.filename}`;
+        if (logoUrl) {
+            client.logoUrl = logoUrl;
         }
 
         await client.save();

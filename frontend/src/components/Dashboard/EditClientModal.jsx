@@ -1,19 +1,18 @@
-import { useState, useRef, useEffect } from 'react';
-import { X, Upload, Palette, Loader } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, Loader } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import api, { BASE_URL } from '../../api/axios';
+import api from '../../api/axios';
+import ImageUpload from '../ImageUpload';
 
 const EditClientModal = ({ isOpen, onClose, onSave, client }) => {
-    const fileInputRef = useRef(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [previewUrl, setPreviewUrl] = useState('');
     const [formData, setFormData] = useState({
         name: '',
         industry: '',
         status: 'Onboarding',
         primaryColor: '#3B82F6',
         secondaryColor: '#ffffff',
-        logo: null
+        logoUrl: ''
     });
 
     useEffect(() => {
@@ -24,42 +23,17 @@ const EditClientModal = ({ isOpen, onClose, onSave, client }) => {
                 status: client.status || 'Onboarding',
                 primaryColor: client.brandColors?.primary || '#3B82F6',
                 secondaryColor: client.brandColors?.secondary || '#ffffff',
-                logo: null
+                logoUrl: client.logoUrl || ''
             });
-            if (client.logoUrl) {
-                setPreviewUrl(`${BASE_URL}${client.logoUrl}`);
-            } else {
-                setPreviewUrl('');
-            }
         }
     }, [client]);
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFormData({ ...formData, logo: file });
-            setPreviewUrl(URL.createObjectURL(file));
-        }
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
 
-        const data = new FormData();
-        data.append('name', formData.name);
-        data.append('industry', formData.industry);
-        data.append('status', formData.status);
-        data.append('primaryColor', formData.primaryColor);
-        data.append('secondaryColor', formData.secondaryColor);
-        if (formData.logo) {
-            data.append('logo', formData.logo);
-        }
-
         try {
-            const response = await api.put(`/clients/${client._id}`, data, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
+            const response = await api.put(`/clients/${client._id}`, formData);
             onSave(response.data.client);
             onClose();
         } catch (error) {
@@ -127,26 +101,11 @@ const EditClientModal = ({ isOpen, onClose, onSave, client }) => {
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-300 mb-1">Client Logo</label>
-                                <div
-                                    onClick={() => fileInputRef.current?.click()}
-                                    className="flex items-center justify-center w-full h-24 border-2 border-dashed border-gray-700 rounded-lg cursor-pointer hover:border-blue-500 hover:bg-gray-800/50 transition-all group relative overflow-hidden"
-                                >
-                                    {previewUrl ? (
-                                        <img src={previewUrl} alt="Preview" className="h-full object-contain p-2" />
-                                    ) : (
-                                        <div className="flex flex-col items-center gap-2 text-gray-500 group-hover:text-blue-400">
-                                            <Upload size={24} />
-                                            <span className="text-xs">Click to change logo</span>
-                                        </div>
-                                    )}
-                                    <input
-                                        type="file"
-                                        ref={fileInputRef}
-                                        onChange={handleFileChange}
-                                        accept="image/*"
-                                        className="hidden"
-                                    />
-                                </div>
+                                <ImageUpload
+                                    value={formData.logoUrl}
+                                    onChange={(url) => setFormData({ ...formData, logoUrl: url })}
+                                    onRemove={() => setFormData({ ...formData, logoUrl: '' })}
+                                />
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">

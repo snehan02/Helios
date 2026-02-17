@@ -145,7 +145,15 @@ const Dashboard = () => {
                         >
                             <div className="flex items-start justify-between mb-4">
                                 <div className="flex items-center gap-3">
-                                    <img src={client.logoUrl ? `${BASE_URL}${client.logoUrl}` : 'https://via.placeholder.com/40'} alt={client.name} className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 object-cover" />
+                                    <img
+                                        src={client.logoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(client.name)}&background=random`}
+                                        alt={client.name}
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(client.name)}&background=random`;
+                                        }}
+                                        className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 object-cover"
+                                    />
                                     <div>
                                         <h3 className="font-semibold text-gray-900 dark:text-white">{client.name}</h3>
                                         <span className={`text-xs px-2 py-0.5 rounded-full ${client.status === 'Active' ? 'bg-green-500/10 dark:bg-green-500/20 text-green-600 dark:text-green-400' :
