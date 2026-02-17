@@ -2,55 +2,31 @@ import { useState, useRef } from 'react';
 import { X, Upload, Palette, Loader } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../api/axios';
+import ImageUpload from '../ImageUpload';
 
 const CreateClientModal = ({ isOpen, onClose, onSave }) => {
-    const fileInputRef = useRef(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [previewUrl, setPreviewUrl] = useState('');
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         industry: '',
         password: '',
         status: 'Onboarding',
-        logo: null,
+        logoUrl: '',
         primaryColor: '#3B82F6',
         secondaryColor: '#ffffff'
     });
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFormData({ ...formData, logo: file });
-            setPreviewUrl(URL.createObjectURL(file));
-        }
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
 
-        const data = new FormData();
-        data.append('name', formData.name);
-        data.append('email', formData.email);
-        data.append('password', formData.password);
-        data.append('industry', formData.industry);
-        data.append('status', formData.status);
-        data.append('primaryColor', formData.primaryColor);
-        data.append('secondaryColor', formData.secondaryColor);
-        if (formData.logo) {
-            data.append('logo', formData.logo);
-        }
-
         try {
-            const response = await api.post('/clients', data, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
+            const response = await api.post('/clients', formData);
             onSave(response.data.client);
             onClose();
             // Reset form
-            setFormData({ name: '', email: '', password: '', industry: '', status: 'Onboarding', logo: null, primaryColor: '#3B82F6', secondaryColor: '#ffffff' });
-            setPreviewUrl('');
+            setFormData({ name: '', email: '', password: '', industry: '', status: 'Onboarding', logoUrl: '', primaryColor: '#3B82F6', secondaryColor: '#ffffff' });
         } catch (error) {
             console.error("Error creating client", error);
             alert(error.response?.data?.message || "Failed to create client");

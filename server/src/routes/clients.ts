@@ -53,12 +53,11 @@ router.get('/', authenticate, authorize(['admin']), async (req, res) => {
 });
 
 // Create new client (Admin only)
-router.post('/', authenticate, authorize(['admin']), upload.single('logo'), async (req: any, res: any) => {
+router.post('/', authenticate, authorize(['admin']), async (req: any, res: any) => {
     try {
         console.log("Received body:", req.body);
-        console.log("Received file:", req.file);
 
-        const { name, email, password, industry, primaryColor, secondaryColor, status } = req.body;
+        const { name, email, password, industry, primaryColor, secondaryColor, status, logoUrl } = req.body;
 
         // Basic Validation
         if (!email || !password || !name) {
@@ -72,12 +71,10 @@ router.post('/', authenticate, authorize(['admin']), upload.single('logo'), asyn
         }
 
         // 1. Create Client Profile first
-        const logoUrl = req.file ? `/uploads/${req.file.filename}` : '';
-
         const newClient = new Client({
             name,
             industry,
-            logoUrl,
+            logoUrl: logoUrl || '',
             status: status || 'Onboarding',
             brandColors: {
                 primary: primaryColor || '#000000',

@@ -6,8 +6,4 @@ dotenv.config();
 
 export const uploadThingRouter = createRouteHandler({
     router: uploadRouter,
-    config: {
-        uploadthingId: process.env.UPLOADTHING_APP_ID,
-        uploadthingSecret: process.env.UPLOADTHING_SECRET,
-    },
 });
