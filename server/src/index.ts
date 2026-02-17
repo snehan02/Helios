@@ -17,6 +17,13 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
+
+// Mount UploadThing before express.json() to avoid body parsing issues
+app.use(
+    "/api/uploadthing",
+    uploadThingRouter
+);
+
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
@@ -25,10 +32,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/calendar', calendarRoutes);
 app.use('/api/dashboard', dashboardRoutes);
-app.use(
-    "/api/uploadthing",
-    uploadThingRouter
-);
 
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok' });
