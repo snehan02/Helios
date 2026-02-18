@@ -7,7 +7,7 @@ import { validateEnv } from './utils/validateEnv';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
 import authRoutes from './routes/auth';
-import clientRoutes from './routes/clients';
+import clientRoutes from './routes/clientRoutes';
 import calendarRoutes from './routes/calendar';
 import dashboardRoutes from './routes/dashboard';
 
