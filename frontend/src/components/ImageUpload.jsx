@@ -1,4 +1,4 @@
-import { UploadButton } from "../lib/uploadthing";
+import { UploadDropzone } from "../lib/uploadthing";
 import { X } from "lucide-react";
 
 export const ImageUpload = ({
@@ -29,22 +29,18 @@ export const ImageUpload = ({
     }
 
     return (
-        <div className="w-full border-2 border-dashed border-gray-700 rounded-lg p-6 flex flex-col items-center justify-center bg-gray-900/50 hover:bg-gray-900 transition-colors">
-            <UploadButton
-                endpoint={endpoint}
-                onClientUploadComplete={(res) => {
-                    console.log("Files:", res);
-                    if (res?.[0]) onChange(res[0].url);
-                }}
-                onUploadError={(error) => {
-                    console.error("Upload error:", error);
-                    alert(`ERROR! ${error.message}`);
-                }}
-            />
-            <p className="text-gray-400 text-sm mt-2">
-                Upload Image (Max 4MB)
-            </p>
-        </div>
+        <UploadDropzone
+            endpoint={endpoint}
+            onClientUploadComplete={(res) => {
+                console.log("Files:", res);
+                if (res?.[0]) onChange(res[0].url);
+            }}
+            onUploadError={(error) => {
+                console.error("Upload error:", error);
+                alert(`ERROR! ${error.message}`);
+            }}
+            className="ut-label:text-blue-500 ut-allowed-content:text-gray-400 border-gray-600 bg-gray-800/50 hover:bg-gray-800/80 transition-all duration-200"
+        />
     );
 };
 
