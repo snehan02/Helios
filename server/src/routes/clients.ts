@@ -18,11 +18,40 @@ router.get('/', authenticate, authorize(['admin']), async (req, res) => {
 });
 
 // Create new client (Admin only)
+// Create new client (Admin only)
 router.post('/', authenticate, authorize(['admin']), async (req: any, res: any) => {
     try {
-        console.log("Received body:", req.body);
+        const contentType = req.headers['content-type'] || '';
+        let body = req.body;
+        let logoUrl = body.logoUrl;
 
-        const { name, email, password, industry, primaryColor, secondaryColor, status, logoUrl } = req.body;
+        // Handle multipart/form-data
+        if (contentType.includes('multipart/form-data')) {
+            const { parseMultipart } = await import('../utils/parseMultipart');
+            const { UTApi } = await import('uploadthing/server');
+
+            const parsed = await parseMultipart(req);
+            body = parsed.fields;
+
+            const logoFile = parsed.files.find(f => f.fieldname === 'logo');
+            if (logoFile) {
+                const utapi = new UTApi();
+                // Create a standard File object from the buffer
+                const file = new File([logoFile.buffer as any], logoFile.filename, { type: logoFile.mimetype });
+                const response = await utapi.uploadFiles([file]);
+
+                if (response[0]?.data?.url) {
+                    logoUrl = response[0].data.url;
+                } else {
+                    console.error('UploadThing error:', response[0]?.error);
+                    return res.status(500).json({ message: 'Failed to upload logo' });
+                }
+            }
+        }
+
+        console.log("Processed body:", body);
+
+        const { name, email, password, industry, primaryColor, secondaryColor, status } = body;
 
         // Basic Validation
         if (!email || !password || !name) {

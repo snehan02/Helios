@@ -29,18 +29,25 @@ export const ImageUpload = ({
     }
 
     return (
-        <UploadDropzone
-            endpoint={endpoint}
-            onClientUploadComplete={(res) => {
-                console.log("Files:", res);
-                if (res?.[0]) onChange(res[0].url);
-            }}
-            onUploadError={(error) => {
-                console.error("Upload error:", error);
-                alert(`ERROR! ${error.message}`);
-            }}
-            className="ut-label:text-blue-500 ut-allowed-content:text-gray-400 border-gray-600 bg-gray-800/50 hover:bg-gray-800/80 transition-all duration-200"
-        />
+        <div className="w-full h-32 border-2 border-dashed border-gray-600 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 hover:bg-gray-800/50 transition-all relative">
+            <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                        // Create a fake URL for preview
+                        const previewUrl = URL.createObjectURL(file);
+                        onChange(file); // Pass the File object, not URL
+                    }
+                }}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            />
+            <div className="flex flex-col items-center text-gray-400">
+                <span className="text-sm font-medium">Click to upload logo</span>
+                <span className="text-xs text-gray-500 mt-1">SVG, PNG, JPG or GIF (max 4MB)</span>
+            </div>
+        </div>
     );
 };
 

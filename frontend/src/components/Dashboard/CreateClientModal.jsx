@@ -22,7 +22,31 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
         setIsLoading(true);
 
         try {
-            const response = await api.post('/clients', formData);
+            const data = new FormData();
+            Object.keys(formData).forEach(key => {
+                // If logoUrl is a File, append it as 'logo'. 
+                // If it's a string (edit mode initial), we might need logic, but for create it's fine.
+                // However, the backend expects 'logo' for the file.
+                if (key === 'logoUrl' && formData[key] instanceof File) {
+                    data.append('logo', formData[key]);
+                } else {
+                    data.append(key, formData[key]);
+                }
+            });
+
+            // If we didn't append a logo file but have a logoUrl string (unlikely for create, but possible), 
+            // the backend might treat it as a string URL if we appended it as 'logoUrl'.
+            // The logic above appends 'logoUrl' as file if it is a file. 
+            // Wait, failure: 'logoUrl' key in formData holds the File?
+            // Yes, based on ImageUpload change.
+            // But we should append it as 'logo' for the file, and maybe 'logoUrl' as empty string if it's a file?
+            // Let's just append everything and let backend handle.
+            // Backend looks for 'logo' file.
+
+            const response = await api.post('/clients', data, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+
             onSave(response.data.client);
             onClose();
             // Reset form
