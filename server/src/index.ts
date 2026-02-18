@@ -1,4 +1,4 @@
-import 'express-async-errors'; // Must be at the top
+
 import express from 'express';
 import connectDB from './config/db';
 import cors from 'cors';
