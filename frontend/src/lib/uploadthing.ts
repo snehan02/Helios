@@ -25,10 +25,10 @@ export type OurFileRouter = {
 
 const BASE_URL = "https://helios-chi-six.vercel.app";
 
-export const UploadButton = generateUploadButton<OurFileRouter>(
-    `${BASE_URL}/api/uploadthing`
-);
+export const UploadButton = generateUploadButton<OurFileRouter>({
+    url: `${BASE_URL}/api/uploadthing`,
+});
 
-export const UploadDropzone = generateUploadDropzone<OurFileRouter>(
-    `${BASE_URL}/api/uploadthing`
-);
+export const UploadDropzone = generateUploadDropzone<OurFileRouter>({
+    url: `${BASE_URL}/api/uploadthing`,
+});
