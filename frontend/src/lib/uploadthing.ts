@@ -23,12 +23,6 @@ export type OurFileRouter = {
     };
 } & FileRouter;
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+export const UploadButton = generateUploadButton<OurFileRouter>();
 
-export const UploadButton = generateUploadButton<OurFileRouter>({
-    url: `${BASE_URL}/api/uploadthing`,
-});
-
-export const UploadDropzone = generateUploadDropzone<OurFileRouter>({
-    url: `${BASE_URL}/api/uploadthing`,
-});
+export const UploadDropzone = generateUploadDropzone<OurFileRouter>();

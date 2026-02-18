@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+console.log("✅ UploadThing Route Module Loaded");
+
 export const uploadThingRouter = createRouteHandler({
     router: uploadRouter,
 });
