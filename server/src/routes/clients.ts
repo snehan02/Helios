@@ -18,40 +18,70 @@ router.get('/', authenticate, authorize(['admin']), async (req, res) => {
 });
 
 // Create new client (Admin only)
-// Create new client (Admin only)
 router.post('/', authenticate, authorize(['admin']), async (req: any, res: any) => {
     try {
         const contentType = req.headers['content-type'] || '';
-        let body = req.body;
-        let logoUrl = body.logoUrl;
 
-        // Handle multipart/form-data
-        if (contentType.includes('multipart/form-data')) {
-            const { parseMultipart } = await import('../utils/parseMultipart');
-            const { UTApi } = await import('uploadthing/server');
-
-            const parsed = await parseMultipart(req);
-            body = parsed.fields;
-
-            const logoFile = parsed.files.find(f => f.fieldname === 'logo');
-            if (logoFile) {
-                const utapi = new UTApi();
-                // Create a standard File object from the buffer
-                const file = new File([logoFile.buffer as any], logoFile.filename, { type: logoFile.mimetype });
-                const response = await utapi.uploadFiles([file]);
-
-                if (response[0]?.data?.url) {
-                    logoUrl = response[0].data.url;
-                } else {
-                    console.error('UploadThing error:', response[0]?.error);
-                    return res.status(500).json({ message: 'Failed to upload logo' });
+        // Function to handle parsing and uploading logic within the route
+        const handleUpload = (): Promise<{ fields: any, logoUrl: string }> => {
+            return new Promise((resolve, reject) => {
+                if (!contentType.includes('multipart/form-data')) {
+                    return resolve({ fields: req.body, logoUrl: req.body.logoUrl || '' });
                 }
-            }
-        }
 
-        console.log("Processed body:", body);
+                import('busboy').then(({ default: Busboy }) => {
+                    const busboy = Busboy({ headers: req.headers });
+                    const fields: any = {};
+                    let fileBuffer: Buffer | null = null;
+                    let fileName = "";
+                    let mimeType = "";
 
-        const { name, email, password, industry, primaryColor, secondaryColor, status } = body;
+                    busboy.on("field", (fieldname, value) => {
+                        fields[fieldname] = value;
+                    });
+
+                    busboy.on("file", (fieldname, file, info) => {
+                        if (fieldname === 'logo') {
+                            fileName = info.filename;
+                            mimeType = info.mimeType;
+                            const chunks: Buffer[] = [];
+                            file.on("data", (data) => chunks.push(data));
+                            file.on("end", () => {
+                                fileBuffer = Buffer.concat(chunks);
+                            });
+                        } else {
+                            file.resume(); // consume stream
+                        }
+                    });
+
+                    busboy.on("finish", async () => {
+                        try {
+                            let logoUrl = "";
+                            if (fileBuffer && fileName) {
+                                const { UTApi } = await import('uploadthing/server');
+                                const utapi = new UTApi();
+                                const file = new File([fileBuffer as any], fileName, { type: mimeType });
+                                const response = await utapi.uploadFiles([file]);
+                                if (response[0]?.data?.url) {
+                                    logoUrl = response[0].data.url;
+                                }
+                            }
+                            resolve({ fields, logoUrl });
+                        } catch (err) {
+                            reject(err);
+                        }
+                    });
+
+                    busboy.on("error", (err) => reject(err));
+                    req.pipe(busboy);
+                });
+            });
+        };
+
+        const { fields, logoUrl } = await handleUpload();
+        console.log("Processed fields:", fields);
+
+        const { name, email, password, industry, primaryColor, secondaryColor, status } = fields;
 
         // Basic Validation
         if (!email || !password || !name) {
@@ -99,13 +129,13 @@ router.post('/', authenticate, authorize(['admin']), async (req: any, res: any) 
                 email: newUser.email
             }
         });
+
     } catch (error: any) {
         console.error('Error creating client:', error);
         res.status(500).json({ message: error.message || 'Server error' });
     }
 });
 
-// Get single client details
 // Get single client details
 router.get('/:id', authenticate, async (req: any, res: any) => {
     try {
