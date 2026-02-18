@@ -23,7 +23,7 @@ export type OurFileRouter = {
     };
 } & FileRouter;
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://helios-chi-six.vercel.app";
+const BASE_URL = "https://helios-chi-six.vercel.app";
 
 export const UploadButton = generateUploadButton<OurFileRouter>(
     `${BASE_URL}/api/uploadthing`
