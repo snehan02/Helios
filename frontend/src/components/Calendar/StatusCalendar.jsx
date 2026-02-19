@@ -152,127 +152,130 @@ const StatusCalendar = ({ events, onDateClick, onSave, role = 'client' }) => {
                         <motion.div
                             initial={{ scale: 0.9, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
-                            className="bg-zinc-900/95 border border-zinc-400/20 p-6 md:p-10 rounded-[2.5rem] w-full max-w-lg shadow-[0_40px_80px_rgba(0,0,0,0.7)] relative overflow-hidden max-h-[90vh] overflow-y-auto custom-scrollbar-silver"
+                            className="bg-zinc-900/95 border border-zinc-400/20 rounded-[2.5rem] w-full max-w-lg shadow-[0_40px_80px_rgba(0,0,0,0.7)] relative overflow-hidden flex flex-col max-h-[90vh]"
                             onClick={e => e.stopPropagation()}
                         >
                             {/* Modal Silver Glow */}
-                            <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-zinc-400/40 to-transparent" />
+                            <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-zinc-400/40 to-transparent z-20" />
 
-                            <div className="flex justify-between items-start mb-10">
-                                <div>
-                                    <h3 className="text-4xl font-black text-white tracking-tighter mb-2">
-                                        {format(selectedDate.date, 'MMMM d')}
-                                    </h3>
-                                    <p className="text-zinc-500 font-black text-xs uppercase tracking-[0.3em] flex items-center gap-2">
-                                        Project Timeline <span className="w-4 h-[1px] bg-zinc-800" /> {format(selectedDate.date, 'yyyy')}
-                                    </p>
-                                </div>
-                                <button onClick={closePopup} className="btn-silver p-3 rounded-2xl shadow-xl group">
-                                    <X size={20} className="group-hover:rotate-90 transition-transform duration-300" />
-                                </button>
-                            </div>
+                            <div className="flex-1 overflow-y-auto custom-scrollbar-silver p-6 md:p-10">
 
-                            {isEditing ? (
-                                <div className="space-y-6">
+                                <div className="flex justify-between items-start mb-6 md:mb-10 sticky top-0 bg-transparent z-10">
                                     <div>
-                                        <label className="block text-zinc-400 text-xs font-bold uppercase tracking-widest mb-4">Select Status</label>
-                                        <div className="flex gap-3">
-                                            {statusOptions.map((option) => (
-                                                <button
-                                                    key={option.value}
-                                                    onClick={() => setFormData({ ...formData, status: option.value })}
-                                                    className={clsx(
-                                                        "flex-1 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border-2",
-                                                        formData.status === option.value
-                                                            ? option.value === 'green' ? 'bg-green-400/20 border-green-400/50 text-green-400 shadow-[0_10px_30px_rgba(74,222,128,0.2)] scale-105' :
-                                                                option.value === 'yellow' ? 'bg-yellow-400/20 border-yellow-400/50 text-yellow-400 shadow-[0_10px_30px_rgba(250,204,21,0.2)] scale-105' :
-                                                                    'bg-red-400/20 border-red-400/50 text-red-400 shadow-[0_10px_30px_rgba(248,113,113,0.2)] scale-105'
-                                                            : `border-zinc-800 bg-zinc-800/20 text-zinc-500 hover:border-zinc-700/50 hover:bg-zinc-800/40`
-                                                    )}
-                                                >
-                                                    {option.label}
-                                                </button>
-                                            ))}
-                                        </div>
+                                        <h3 className="text-3xl md:text-4xl font-black text-white tracking-tighter mb-2">
+                                            {format(selectedDate.date, 'MMMM d')}
+                                        </h3>
+                                        <p className="text-zinc-500 font-black text-xs uppercase tracking-[0.3em] flex items-center gap-2">
+                                            Project Timeline <span className="w-4 h-[1px] bg-zinc-800" /> {format(selectedDate.date, 'yyyy')}
+                                        </p>
                                     </div>
-
-                                    <div>
-                                        <label className="block text-zinc-400 text-xs font-bold uppercase tracking-widest mb-3">Logs & Details</label>
-                                        <textarea
-                                            value={formData.details}
-                                            onChange={(e) => setFormData({ ...formData, details: e.target.value })}
-                                            className="w-full bg-zinc-800/50 border border-zinc-700 rounded-xl p-4 text-white text-sm focus:outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 transition-all resize-none h-32 placeholder:text-zinc-600"
-                                            placeholder="Description of the log..."
-                                        />
-                                    </div>
-
-                                    <div className="flex justify-end gap-3 pt-4">
-                                        <button
-                                            onClick={() => setIsEditing(false)}
-                                            className="px-6 py-3 text-sm font-medium text-zinc-400 hover:text-white transition-colors"
-                                        >
-                                            Cancel
-                                        </button>
-                                        <button
-                                            onClick={handleSave}
-                                            className="btn-silver px-8 py-3 text-sm font-bold rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.2)]"
-                                        >
-                                            Save Changes
-                                        </button>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="space-y-6">
-                                    <div className="max-h-[300px] overflow-y-auto pr-2 custom-scrollbar-silver space-y-4">
-                                        {selectedDate.dayEvents.length > 0 ? (
-                                            selectedDate.dayEvents.map((e, i) => {
-                                                const styles = getStatusStyles(e.status);
-                                                return (
-                                                    <div key={e._id || i} className="p-5 bg-zinc-900/40 border border-zinc-400/10 rounded-2xl group relative hover:border-zinc-400/30 transition-all duration-300 shadow-xl">
-                                                        <div className="flex items-center justify-between mb-3">
-                                                            <div className={clsx("px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.15em] border backdrop-blur-md", styles.color, styles.text, styles.border)}>
-                                                                {styles.label}
-                                                            </div>
-                                                            <button
-                                                                onClick={() => {
-                                                                    setFormData({ status: e.status, details: e.details || '', id: e._id });
-                                                                    setIsEditing(true);
-                                                                }}
-                                                                className="text-[10px] text-zinc-500 hover:text-white underline underline-offset-4 decoration-zinc-700 hover:decoration-zinc-400 uppercase tracking-widest font-black transition-all"
-                                                            >
-                                                                Edit Entry
-                                                            </button>
-                                                        </div>
-                                                        <p className="text-zinc-300 text-sm leading-relaxed font-medium">
-                                                            {e.details || 'No details provided.'}
-                                                        </p>
-                                                    </div>
-                                                );
-                                            })
-                                        ) : (
-                                            <div className="text-center py-16 bg-zinc-900/20 border border-dashed border-zinc-800 rounded-3xl">
-                                                <p className="text-zinc-500 text-sm font-medium">No activity logged yet.</p>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <button
-                                        onClick={() => {
-                                            setFormData({ status: 'green', details: '', id: null });
-                                            setIsEditing(true);
-                                        }}
-                                        className="btn-silver w-full py-5 mt-6 rounded-2xl text-xs font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3 group shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.5)]"
-                                    >
-                                        <Plus size={16} className="group-hover:rotate-90 transition-transform duration-500" />
-                                        Log New Status
+                                    <button onClick={closePopup} className="btn-silver p-2 md:p-3 rounded-2xl shadow-xl group">
+                                        <X size={20} className="group-hover:rotate-90 transition-transform duration-300" />
                                     </button>
                                 </div>
-                            )}
+
+                                {isEditing ? (
+                                    <div className="space-y-6">
+                                        <div>
+                                            <label className="block text-zinc-400 text-xs font-bold uppercase tracking-widest mb-4">Select Status</label>
+                                            <div className="flex gap-3">
+                                                {statusOptions.map((option) => (
+                                                    <button
+                                                        key={option.value}
+                                                        onClick={() => setFormData({ ...formData, status: option.value })}
+                                                        className={clsx(
+                                                            "flex-1 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border-2",
+                                                            formData.status === option.value
+                                                                ? option.value === 'green' ? 'bg-green-400/20 border-green-400/50 text-green-400 shadow-[0_10px_30px_rgba(74,222,128,0.2)] scale-105' :
+                                                                    option.value === 'yellow' ? 'bg-yellow-400/20 border-yellow-400/50 text-yellow-400 shadow-[0_10px_30px_rgba(250,204,21,0.2)] scale-105' :
+                                                                        'bg-red-400/20 border-red-400/50 text-red-400 shadow-[0_10px_30px_rgba(248,113,113,0.2)] scale-105'
+                                                                : `border-zinc-800 bg-zinc-800/20 text-zinc-500 hover:border-zinc-700/50 hover:bg-zinc-800/40`
+                                                        )}
+                                                    >
+                                                        {option.label}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-zinc-400 text-xs font-bold uppercase tracking-widest mb-3">Logs & Details</label>
+                                            <textarea
+                                                value={formData.details}
+                                                onChange={(e) => setFormData({ ...formData, details: e.target.value })}
+                                                className="w-full bg-zinc-800/50 border border-zinc-700 rounded-xl p-4 text-white text-sm focus:outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 transition-all resize-none h-24 md:h-32 placeholder:text-zinc-600"
+                                                placeholder="Description of the log..."
+                                            />
+                                        </div>
+
+                                        <div className="flex justify-end gap-3 pt-4 border-t border-zinc-800/50 mt-4">
+                                            <button
+                                                onClick={() => setIsEditing(false)}
+                                                className="px-6 py-3 text-sm font-medium text-zinc-400 hover:text-white transition-colors"
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                onClick={handleSave}
+                                                className="btn-silver px-8 py-3 text-sm font-bold rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                                            >
+                                                Save Changes
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-6">
+                                        <div className="max-h-[300px] overflow-y-auto pr-2 custom-scrollbar-silver space-y-4">
+                                            {selectedDate.dayEvents.length > 0 ? (
+                                                selectedDate.dayEvents.map((e, i) => {
+                                                    const styles = getStatusStyles(e.status);
+                                                    return (
+                                                        <div key={e._id || i} className="p-5 bg-zinc-900/40 border border-zinc-400/10 rounded-2xl group relative hover:border-zinc-400/30 transition-all duration-300 shadow-xl">
+                                                            <div className="flex items-center justify-between mb-3">
+                                                                <div className={clsx("px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.15em] border backdrop-blur-md", styles.color, styles.text, styles.border)}>
+                                                                    {styles.label}
+                                                                </div>
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setFormData({ status: e.status, details: e.details || '', id: e._id });
+                                                                        setIsEditing(true);
+                                                                    }}
+                                                                    className="text-[10px] text-zinc-500 hover:text-white underline underline-offset-4 decoration-zinc-700 hover:decoration-zinc-400 uppercase tracking-widest font-black transition-all"
+                                                                >
+                                                                    Edit Entry
+                                                                </button>
+                                                            </div>
+                                                            <p className="text-zinc-300 text-sm leading-relaxed font-medium">
+                                                                {e.details || 'No details provided.'}
+                                                            </p>
+                                                        </div>
+                                                    );
+                                                })
+                                            ) : (
+                                                <div className="text-center py-16 bg-zinc-900/20 border border-dashed border-zinc-800 rounded-3xl">
+                                                    <p className="text-zinc-500 text-sm font-medium">No activity logged yet.</p>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <button
+                                            onClick={() => {
+                                                setFormData({ status: 'green', details: '', id: null });
+                                                setIsEditing(true);
+                                            }}
+                                            className="btn-silver w-full py-5 mt-6 rounded-2xl text-xs font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3 group shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.5)]"
+                                        >
+                                            <Plus size={16} className="group-hover:rotate-90 transition-transform duration-500" />
+                                            Log New Status
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
-        </div >
+        </div>
     );
 };
 
