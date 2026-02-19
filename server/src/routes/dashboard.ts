@@ -1,4 +1,3 @@
-import express from 'express';
 import DashboardData from '../models/DashboardData';
 import { authenticate, authorize } from '../middleware/auth';
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Edit2, Save, X, Plus, Trash2 } from 'lucide-react';
+import clsx from 'clsx';
 
 const InfoBox = ({ title, data, type, onSave, readOnly = false }) => {
     const [isEditing, setIsEditing] = useState(false);
