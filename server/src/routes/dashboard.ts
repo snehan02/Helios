@@ -1,15 +1,16 @@
+import { Router, Request, Response } from 'express';
 import DashboardData from '../models/DashboardData';
 import { authenticate, authorize } from '../middleware/auth';
 
-const router = express.Router();
+const router = Router();
 
 // Get dashboard data (Read: Admin & Client)
-router.get('/:clientId', authenticate, async (req: any, res: any) => {
+router.get('/:clientId', authenticate, async (req: Request, res: Response) => {
     try {
         const { clientId } = req.params;
 
         // Security check
-        if (req.user.role === 'client' && req.user.clientId !== clientId) {
+        if ((req as any).user.role === 'client' && (req as any).user.clientId !== clientId) {
             return res.status(403).json({ message: 'Access denied' });
         }
 
@@ -32,7 +33,7 @@ router.get('/:clientId', authenticate, async (req: any, res: any) => {
 });
 
 // Update Payments (Admin Only)
-router.put('/:clientId/payments', authenticate, authorize(['admin']), async (req: any, res: any) => {
+router.put('/:clientId/payments', authenticate, authorize(['admin']), async (req: Request, res: Response) => {
     try {
         const { clientId } = req.params;
         const { payments } = req.body;
@@ -51,7 +52,7 @@ router.put('/:clientId/payments', authenticate, authorize(['admin']), async (req
 });
 
 // Update Metrics (Admin Only)
-router.put('/:clientId/metrics', authenticate, authorize(['admin']), async (req: any, res: any) => {
+router.put('/:clientId/metrics', authenticate, authorize(['admin']), async (req: Request, res: Response) => {
     try {
         const { clientId } = req.params;
         const { metrics } = req.body;
@@ -70,7 +71,7 @@ router.put('/:clientId/metrics', authenticate, authorize(['admin']), async (req:
 });
 
 // Update Resources (Admin Only)
-router.put('/:clientId/resources', authenticate, authorize(['admin']), async (req: any, res: any) => {
+router.put('/:clientId/resources', authenticate, authorize(['admin']), async (req: Request, res: Response) => {
     try {
         const { clientId } = req.params;
         const { resources } = req.body;
@@ -89,7 +90,7 @@ router.put('/:clientId/resources', authenticate, authorize(['admin']), async (re
 });
 
 // Update dynamic layout (Admin Only)
-router.put('/:clientId/layout', authenticate, authorize(['admin']), async (req: any, res: any) => {
+router.put('/:clientId/layout', authenticate, authorize(['admin']), async (req: Request, res: Response) => {
     try {
         const { clientId } = req.params;
         const { layout } = req.body;

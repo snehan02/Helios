@@ -127,6 +127,34 @@ const ClientDashboard = () => {
         }
     };
 
+    const handleDownloadReport = () => {
+        try {
+            console.log("Generating report for:", clientName);
+            const reportData = {
+                clientName,
+                generatedAt: new Date().toISOString(),
+                dashboardData: layout,
+                calendarEvents: events
+            };
+            const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${(clientName || 'Client').replace(/\s+/g, '_')}_Report.json`;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            setTimeout(() => {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }, 100);
+            console.log("Download triggered");
+        } catch (error) {
+            console.error("Download failed:", error);
+            alert("Download failed. Please check the console.");
+        }
+    };
+
     return (
         <div className="min-h-[calc(100vh-8rem)] bg-transparent p-4">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 h-full">
@@ -140,7 +168,7 @@ const ClientDashboard = () => {
                                 <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tighter">PROJECT HUB</h1>
                             </div>
                             <p className="text-zinc-500 font-medium text-sm flex items-center gap-2">
-                                Welcome, <span className="text-zinc-300 capitalize">{clientName || 'Partner'}</span>
+                                Welcome, <span className="text-zinc-900 dark:text-zinc-300 font-bold capitalize">{clientName || 'Partner'}</span>
                             </p>
                         </div>
 
@@ -151,6 +179,16 @@ const ClientDashboard = () => {
                             >
                                 <RefreshCw size={14} className="animate-spin-slow" />
                                 Sync
+                            </button>
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleDownloadReport();
+                                }}
+                                className="flex-1 md:flex-none btn-silver px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" /></svg>
+                                Download Report
                             </button>
                             <button
                                 onClick={handleBlocked}

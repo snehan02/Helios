@@ -68,15 +68,15 @@
     }
 
     .glass-panel {
-        @apply bg-white border border-zinc-200 shadow-xl rounded-xl transition-all duration-300 backdrop-blur-xl dark:bg-zinc-900/80 dark:border-zinc-700;
+        @apply bg-white border border-zinc-300 shadow-2xl rounded-2xl transition-all duration-300 backdrop-blur-2xl dark:bg-zinc-900/80 dark:border-zinc-700;
     }
 
     .bg-metric-black {
-        @apply bg-white text-zinc-900 border border-zinc-200 shadow-lg dark:bg-gradient-to-br dark:from-zinc-800 dark:to-zinc-900 dark:text-white dark:border-zinc-700;
+        @apply bg-white border border-zinc-200 shadow-lg dark:bg-gradient-to-br dark:from-zinc-800 dark:to-zinc-900 dark:text-white dark:border-zinc-700;
     }
 
     .client-card {
-        @apply bg-white border border-zinc-200 shadow-lg rounded-xl transition-all duration-300 dark:bg-gradient-to-br dark:from-zinc-900 dark:to-black dark:border-zinc-700;
+        @apply bg-white border border-zinc-300 shadow-xl rounded-2xl transition-all duration-300 dark:bg-gradient-to-br dark:from-zinc-900 dark:to-black dark:border-zinc-700;
     }
 
     .client-card:hover {

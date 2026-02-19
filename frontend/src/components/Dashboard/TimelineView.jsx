@@ -49,7 +49,7 @@ const TimelineView = ({ events = [] }) => {
 
                             {/* Content */}
                             <div className="flex-1 pt-1">
-                                <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+                                <span className="text-xs font-bold text-zinc-500 dark:text-gray-500 uppercase tracking-wide">
                                     {format(new Date(event.date), 'MMMM yyyy')}
                                 </span>
                                 <h4 className="text-md font-bold text-gray-900 dark:text-white mt-1">
@@ -60,16 +60,16 @@ const TimelineView = ({ events = [] }) => {
                                 {event.notes && event.notes.length > 0 ? (
                                     <div className="mt-2 space-y-1">
                                         {event.notes.slice(0, 2).map((note, nIdx) => (
-                                            <p key={nIdx} className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+                                            <p key={nIdx} className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">
                                                 • {note.text}
                                             </p>
                                         ))}
                                         {event.notes.length > 2 && (
-                                            <p className="text-xs text-zinc-400 italic">+{event.notes.length - 2} more notes</p>
+                                            <p className="text-xs text-zinc-500 dark:text-zinc-400 italic">+{event.notes.length - 2} more notes</p>
                                         )}
                                     </div>
                                 ) : (
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
+                                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
                                         {event.details || 'No details provided.'}
                                     </p>
                                 )}

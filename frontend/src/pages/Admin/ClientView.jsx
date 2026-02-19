@@ -123,6 +123,24 @@ const ClientView = () => {
         }
     };
 
+    const handleDownloadReport = () => {
+        const reportData = {
+            clientName: client?.name || 'Client',
+            generatedAt: new Date().toISOString(),
+            dashboardData: layout,
+            calendarEvents: events
+        };
+        const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${(client?.name || 'Client').replace(/\s+/g, '_')}_Data.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    };
+
     return (
         <div className="min-h-[calc(100vh-8rem)] bg-zinc-950 p-4">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 h-full">
@@ -147,6 +165,16 @@ const ClientView = () => {
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /></svg>
                                 Sync
+                            </button>
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleDownloadReport();
+                                }}
+                                className="btn-silver w-full sm:w-auto px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" /></svg>
+                                Download Data
                             </button>
                             <button
                                 onClick={() => setIsLayoutMode(!isLayoutMode)}

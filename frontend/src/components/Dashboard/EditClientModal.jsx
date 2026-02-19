@@ -56,41 +56,41 @@ const EditClientModal = ({ isOpen, onClose, onSave, client }) => {
                         exit={{ opacity: 0, scale: 0.95 }}
                         className="glass-panel w-full md:max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl relative z-10"
                     >
-                        <div className="flex items-center justify-between p-6 border-b border-zinc-700">
-                            <h2 className="text-xl font-bold text-white">Edit Client</h2>
-                            <button onClick={onClose} className="text-zinc-400 hover:text-white transition-colors">
+                        <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-700">
+                            <h2 className="text-xl font-bold text-zinc-900 dark:text-white">Edit Client</h2>
+                            <button onClick={onClose} className="text-zinc-400 hover:text-zinc-600 dark:hover:text-white transition-colors">
                                 <X size={20} />
                             </button>
                         </div>
 
                         <form onSubmit={handleSubmit} className="p-6 space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-zinc-300 mb-1">Client Name</label>
+                                <label className="block text-sm font-medium text-zinc-600 dark:text-zinc-300 mb-1">Client Name</label>
                                 <input
                                     type="text"
                                     required
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-white transition-colors"
+                                    className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg px-4 py-2 text-zinc-900 dark:text-white focus:outline-none focus:border-zinc-400 dark:focus:border-white transition-colors"
                                 />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-zinc-300 mb-1">Industry</label>
+                                    <label className="block text-sm font-medium text-zinc-600 dark:text-zinc-300 mb-1">Industry</label>
                                     <input
                                         type="text"
                                         value={formData.industry}
                                         onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                                        className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-white transition-colors"
+                                        className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg px-4 py-2 text-zinc-900 dark:text-white focus:outline-none focus:border-zinc-400 dark:focus:border-white transition-colors"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-zinc-300 mb-1">Account Status</label>
+                                    <label className="block text-sm font-medium text-zinc-600 dark:text-zinc-300 mb-1">Account Status</label>
                                     <select
                                         value={formData.status}
                                         onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                        className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-white transition-colors"
+                                        className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg px-4 py-2 text-zinc-900 dark:text-white focus:outline-none focus:border-zinc-400 dark:focus:border-white transition-colors"
                                     >
                                         <option value="Onboarding">Onboarding</option>
                                         <option value="Active">Active</option>
@@ -100,7 +100,7 @@ const EditClientModal = ({ isOpen, onClose, onSave, client }) => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-zinc-300 mb-1">Client Logo</label>
+                                <label className="block text-sm font-medium text-zinc-600 dark:text-zinc-300 mb-1">Client Logo</label>
                                 <ImageUpload
                                     value={formData.logoUrl}
                                     onChange={(url) => setFormData({ ...formData, logoUrl: url })}
@@ -110,8 +110,8 @@ const EditClientModal = ({ isOpen, onClose, onSave, client }) => {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-zinc-300 mb-1">Primary Color</label>
-                                    <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2">
+                                    <label className="block text-sm font-medium text-zinc-600 dark:text-zinc-300 mb-1">Primary Color</label>
+                                    <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2">
                                         <input
                                             type="color"
                                             value={formData.primaryColor}
@@ -122,8 +122,8 @@ const EditClientModal = ({ isOpen, onClose, onSave, client }) => {
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-zinc-300 mb-1">Secondary Color</label>
-                                    <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2">
+                                    <label className="block text-sm font-medium text-zinc-600 dark:text-zinc-300 mb-1">Secondary Color</label>
+                                    <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg px-3 py-2">
                                         <input
                                             type="color"
                                             value={formData.secondaryColor}
@@ -139,7 +139,7 @@ const EditClientModal = ({ isOpen, onClose, onSave, client }) => {
                                 <button
                                     type="button"
                                     onClick={onClose}
-                                    className="px-4 py-2 rounded-lg text-zinc-300 hover:bg-zinc-700 font-medium transition-colors"
+                                    className="px-4 py-2 rounded-lg text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 font-medium transition-colors"
                                 >
                                     Cancel
                                 </button>

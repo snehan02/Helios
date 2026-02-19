@@ -15,6 +15,32 @@ const FilesModal = ({ isOpen, onClose, clients }) => {
         { name: `${c.name} - Brand_Kit.zip`, type: 'zip', date: '2025-10-14', size: '15 MB' },
     ]);
 
+    const handleDownload = (e, file) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        try {
+            // Since these are mock files, we simulate a download
+            const blob = new Blob([`Content of ${file.name}`], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = file.name;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 100);
+            console.log(`Simulated download started: ${file.name}`);
+        } catch (err) {
+            console.error("Download simulation failed:", err);
+        }
+    };
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -39,19 +65,23 @@ const FilesModal = ({ isOpen, onClose, clients }) => {
                             {allFiles.length > 0 ? (
                                 <div className="space-y-3">
                                     {allFiles.map((file, idx) => (
-                                        <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-zinc-500/30 transition-colors group">
+                                        <div
+                                            key={idx}
+                                            onClick={(e) => handleDownload(e, file)}
+                                            className="flex items-center justify-between p-4 bg-white dark:bg-gray-800/50 rounded-xl border border-zinc-200 dark:border-gray-700 hover:border-zinc-400 dark:hover:border-zinc-500/30 transition-all group cursor-pointer shadow-sm hover:shadow-md"
+                                        >
                                             <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400">
+                                                <div className="w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 dark:text-zinc-400 group-hover:bg-zinc-200 dark:group-hover:bg-zinc-700 transition-colors">
                                                     <FileText size={20} />
                                                 </div>
                                                 <div>
-                                                    <h3 className="font-medium text-gray-900 dark:text-white">{file.name}</h3>
-                                                    <p className="text-xs text-gray-500 dark:text-gray-400">{file.date} • {file.size}</p>
+                                                    <h3 className="font-bold text-zinc-800 dark:text-white group-hover:text-black dark:group-hover:text-white transition-colors">{file.name}</h3>
+                                                    <p className="text-xs text-zinc-500 dark:text-zinc-400">{file.date} • {file.size}</p>
                                                 </div>
                                             </div>
-                                            <button className="p-2 text-gray-400 hover:text-white transition-colors">
+                                            <div className="p-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors bg-zinc-50 dark:bg-zinc-800 rounded-lg">
                                                 <Download size={20} />
-                                            </button>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>

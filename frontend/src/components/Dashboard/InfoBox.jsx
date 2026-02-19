@@ -1,6 +1,20 @@
 import { useState } from 'react';
-import { Edit2, Save, X, Plus, Trash2 } from 'lucide-react';
+import { Edit2, Save, X, Plus, Trash2, Download } from 'lucide-react';
 import clsx from 'clsx';
+
+const exportToCSV = (title, items) => {
+    const headers = ['Label', 'Value'];
+    const rows = items.map(item => [item.label, item.value]);
+    const csvContent = [headers, ...rows].map(e => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${title.replace(/\s+/g, '_')}_export.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
 
 const InfoBox = ({ title, data, type, onSave, readOnly = false }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -33,23 +47,35 @@ const InfoBox = ({ title, data, type, onSave, readOnly = false }) => {
             <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-zinc-400/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
             <div className="flex items-center justify-between mb-6">
-                <h3 className="text-sm font-black text-gray-500 dark:text-zinc-400 uppercase tracking-widest">{title}</h3>
-                {!readOnly && (
-                    isEditing ? (
-                        <div className="flex gap-2">
-                            <button onClick={() => setIsEditing(false)} className="p-2 text-rose-400 hover:bg-rose-500/10 rounded-xl transition-colors">
-                                <X size={18} />
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            exportToCSV(title, items);
+                        }}
+                        className="p-2 text-zinc-500 hover:text-emerald-500 hover:bg-emerald-500/10 rounded-xl transition-all"
+                        title="Export to CSV"
+                    >
+                        <Download size={18} />
+                    </button>
+                    {!readOnly && (
+                        isEditing ? (
+                            <div className="flex gap-2">
+                                <button onClick={() => setIsEditing(false)} className="p-2 text-rose-400 hover:bg-rose-500/10 rounded-xl transition-colors">
+                                    <X size={18} />
+                                </button>
+                                <button onClick={handleSave} className="p-2 text-emerald-400 hover:bg-emerald-500/10 rounded-xl transition-colors">
+                                    <Save size={18} />
+                                </button>
+                            </div>
+                        ) : (
+                            <button onClick={() => setIsEditing(true)} className="p-2 text-zinc-500 hover:text-white hover:bg-zinc-800 rounded-xl transition-all">
+                                <Edit2 size={18} />
                             </button>
-                            <button onClick={handleSave} className="p-2 text-emerald-400 hover:bg-emerald-500/10 rounded-xl transition-colors">
-                                <Save size={18} />
-                            </button>
-                        </div>
-                    ) : (
-                        <button onClick={() => setIsEditing(true)} className="p-2 text-zinc-500 hover:text-white hover:bg-zinc-800 rounded-xl transition-all">
-                            <Edit2 size={18} />
-                        </button>
-                    )
-                )}
+                        )
+                    )}
+                </div>
             </div>
 
             <div className="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar-silver">
@@ -84,8 +110,19 @@ const InfoBox = ({ title, data, type, onSave, readOnly = false }) => {
                                 <div className="flex-1 min-w-0">
                                     <p className="text-xs font-bold text-gray-400 dark:text-zinc-500 uppercase tracking-tighter mb-1">{item.label}</p>
                                     {type === 'resource' ? (
-                                        <a href={item.value} target="_blank" rel="noopener noreferrer" className="text-sm text-zinc-400 dark:text-zinc-400 hover:text-zinc-600 dark:hover:text-white transition-colors truncate block">
-                                            {item.value.replace('https://', '')}
+                                        <a
+                                            href={item.value.startsWith('http') ? item.value : `https://${item.value}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="group/link flex items-center gap-2 text-sm text-zinc-800 dark:text-zinc-300 hover:text-black dark:hover:text-white transition-colors w-full"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <span className="truncate flex-1 underline decoration-zinc-300 dark:decoration-zinc-700 underline-offset-4 group-hover/link:decoration-zinc-500">
+                                                {item.value.replace(/^https?:\/\//, '')}
+                                            </span>
+                                            <div className="p-1.5 bg-zinc-100 dark:bg-zinc-700 rounded-lg group-hover/link:bg-zinc-200 dark:group-hover/link:bg-zinc-600 transition-colors">
+                                                <Download size={14} />
+                                            </div>
                                         </a>
                                     ) : (
                                         <p className={clsx(
