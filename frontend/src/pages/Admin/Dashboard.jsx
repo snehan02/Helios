@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Search, MoreVertical, Calendar, Edit2, Trash2, FileText } from 'lucide-react';
@@ -67,7 +68,7 @@ const Dashboard = () => {
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition-colors shadow-lg shadow-blue-500/20"
+                    className="btn-silver flex items-center gap-2 px-4 py-2 rounded-lg"
                 >
                     <Plus size={20} />
                     <span>Add Client</span>
@@ -146,7 +147,7 @@ const Dashboard = () => {
                             <div className="flex items-start justify-between mb-4">
                                 <div className="flex items-center gap-3">
                                     <img
-                                        src={client.logoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(client.name)}&background=random`}
+                                        src={client.logoUrl ? (client.logoUrl.startsWith('http') ? client.logoUrl : `${BASE_URL}${client.logoUrl}`) : `https://ui-avatars.com/api/?name=${encodeURIComponent(client.name)}&background=random`}
                                         alt={client.name}
                                         onError={(e) => {
                                             e.target.onerror = null;

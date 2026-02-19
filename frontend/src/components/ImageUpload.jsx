@@ -20,7 +20,7 @@ export const ImageUpload = ({
                     </button>
                 </div>
                 <img
-                    src={value}
+                    src={value instanceof File ? URL.createObjectURL(value) : value}
                     alt="Upload"
                     className="object-contain h-full w-full"
                 />

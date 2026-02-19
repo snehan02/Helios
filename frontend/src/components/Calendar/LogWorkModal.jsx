@@ -55,10 +55,10 @@ const LogWorkModal = ({ isOpen, onClose, onSave, date, initialData }) => {
                                             type="button"
                                             onClick={() => setStatus(s)}
                                             className={`flex flex-col items-center justify-center p-3 rounded-xl border transition-all ${status === s
-                                                    ? s === 'green' ? 'bg-green-500/20 border-green-500 text-green-400'
-                                                        : s === 'yellow' ? 'bg-yellow-500/20 border-yellow-500 text-yellow-400'
-                                                            : 'bg-red-500/20 border-red-500 text-red-400'
-                                                    : 'bg-gray-700/50 border-gray-600 text-gray-400 hover:bg-gray-700'
+                                                ? s === 'green' ? 'bg-green-500/20 border-green-500 text-green-400'
+                                                    : s === 'yellow' ? 'bg-yellow-500/20 border-yellow-500 text-yellow-400'
+                                                        : 'bg-red-500/20 border-red-500 text-red-400'
+                                                : 'bg-gray-700/50 border-gray-600 text-gray-400 hover:bg-gray-700'
                                                 }`}
                                         >
                                             <div className={`w-4 h-4 rounded-full mb-2 ${s === 'green' ? 'bg-green-500' : s === 'yellow' ? 'bg-yellow-500' : 'bg-red-500'
@@ -84,7 +84,7 @@ const LogWorkModal = ({ isOpen, onClose, onSave, date, initialData }) => {
                             <div className="flex justify-end pt-2">
                                 <button
                                     type="submit"
-                                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium shadow-lg shadow-blue-500/20 transition-all"
+                                    className="btn-silver flex items-center gap-2 px-6 py-2.5 rounded-xl font-medium shadow-lg transition-all"
                                 >
                                     <Check size={18} />
                                     <span>Save Entry</span>

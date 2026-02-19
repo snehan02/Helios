@@ -1,3 +1,4 @@
+
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, LogOut, Hexagon, ChevronLeft, ChevronRight, Moon, Sun } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -52,7 +53,11 @@ const Sidebar = ({ navItems = [], role = 'admin', branding = null }) => {
                     <div className="flex items-center gap-3 overflow-hidden">
                         <img
                             src={branding.logoUrl}
-                            alt="Logo"
+                            alt={branding.name || "Logo"}
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(branding.name || 'Client')}&background=random`;
+                            }}
                             className="h-10 w-10 rounded-lg object-contain bg-gray-100 dark:bg-gray-800"
                         />
                         <AnimatePresence>

@@ -147,14 +147,14 @@ const ClientDashboard = () => {
                         <div className="flex gap-4">
                             <button
                                 onClick={() => clientId && fetchCalendarEvents(clientId)}
-                                className="px-5 py-3 bg-slate-800/50 hover:bg-slate-700 border border-slate-700 rounded-2xl text-slate-400 hover:text-white transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-widest shadow-xl"
+                                className="btn-silver px-5 py-3 rounded-2xl flex items-center gap-2 text-xs font-bold uppercase tracking-widest"
                             >
                                 <RefreshCw size={14} className="animate-spin-slow" />
                                 Sync
                             </button>
                             <button
                                 onClick={handleBlocked}
-                                className="px-6 py-3 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-[0_10px_30px_rgba(244,63,94,0.1)] hover:scale-105 active:scale-95"
+                                className="btn-silver px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 active:scale-95"
                             >
                                 Report Blocker
                             </button>

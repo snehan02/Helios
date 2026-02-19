@@ -145,7 +145,7 @@ const EditClientModal = ({ isOpen, onClose, onSave, client }) => {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium shadow-lg shadow-blue-500/20 transition-all"
+                                    className="btn-silver px-6 py-2 rounded-lg font-medium shadow-lg transition-all"
                                 >
                                     {isLoading ? (
                                         <div className="flex items-center gap-2">

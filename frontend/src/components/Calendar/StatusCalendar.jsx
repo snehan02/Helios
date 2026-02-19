@@ -67,13 +67,13 @@ const StatusCalendar = ({ events, onDateClick, onSave, role = 'client' }) => {
                 <div className="flex gap-3">
                     <button
                         onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
-                        className="p-2.5 bg-slate-800/50 hover:bg-slate-700 border border-slate-700 rounded-xl text-slate-400 hover:text-white transition-all shadow-lg"
+                        className="btn-silver p-2.5 rounded-xl shadow-lg"
                     >
                         <ChevronLeft size={18} />
                     </button>
                     <button
                         onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                        className="p-2.5 bg-slate-800/50 hover:bg-slate-700 border border-slate-700 rounded-xl text-slate-400 hover:text-white transition-all shadow-lg"
+                        className="btn-silver p-2.5 rounded-xl shadow-lg"
                     >
                         <ChevronRight size={18} />
                     </button>
@@ -167,7 +167,7 @@ const StatusCalendar = ({ events, onDateClick, onSave, role = 'client' }) => {
                                         Project Timeline <span className="w-4 h-[1px] bg-slate-800" /> {format(selectedDate.date, 'yyyy')}
                                     </p>
                                 </div>
-                                <button onClick={closePopup} className="p-3 bg-slate-800/50 hover:bg-slate-700 border border-slate-700/50 rounded-2xl text-slate-400 hover:text-white transition-all shadow-xl group">
+                                <button onClick={closePopup} className="btn-silver p-3 rounded-2xl shadow-xl group">
                                     <X size={20} className="group-hover:rotate-90 transition-transform duration-300" />
                                 </button>
                             </div>
@@ -215,7 +215,7 @@ const StatusCalendar = ({ events, onDateClick, onSave, role = 'client' }) => {
                                         </button>
                                         <button
                                             onClick={handleSave}
-                                            className="px-8 py-3 bg-white text-slate-900 text-sm font-bold rounded-xl transition-all hover:bg-slate-200 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                                            className="btn-silver px-8 py-3 text-sm font-bold rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                                         >
                                             Save Changes
                                         </button>
@@ -261,7 +261,7 @@ const StatusCalendar = ({ events, onDateClick, onSave, role = 'client' }) => {
                                             setFormData({ status: 'green', details: '', id: null });
                                             setIsEditing(true);
                                         }}
-                                        className="w-full py-5 mt-6 bg-slate-800/80 border border-slate-400/20 text-white rounded-2xl text-xs font-black uppercase tracking-[0.2em] transition-all hover:bg-slate-700 hover:border-slate-400/40 flex items-center justify-center gap-3 group shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.5)]"
+                                        className="btn-silver w-full py-5 mt-6 rounded-2xl text-xs font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3 group shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.5)]"
                                     >
                                         <Plus size={16} className="group-hover:rotate-90 transition-transform duration-500" />
                                         Log New Status
@@ -272,7 +272,7 @@ const StatusCalendar = ({ events, onDateClick, onSave, role = 'client' }) => {
                     </motion.div>
                 )}
             </AnimatePresence>
-        </div>
+        </div >
     );
 };
 

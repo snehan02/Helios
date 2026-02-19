@@ -1,3 +1,4 @@
+
 import { Outlet } from 'react-router-dom';
 import { LayoutDashboard, Moon, Sun } from 'lucide-react';
 import Sidebar from './Sidebar';
@@ -33,7 +34,7 @@ const ClientLayout = () => {
     ];
 
     const branding = clientData ? {
-        logoUrl: clientData.logoUrl ? `${BASE_URL}${clientData.logoUrl}` : null,
+        logoUrl: clientData.logoUrl ? (clientData.logoUrl.startsWith('http') ? clientData.logoUrl : `${BASE_URL}${clientData.logoUrl}`) : null,
         name: clientData.name,
         colors: {
             primary: clientData.brandColors?.primary,
