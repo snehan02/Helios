@@ -22,20 +22,29 @@ const FilesModal = ({ isOpen, onClose, clients }) => {
         }
 
         try {
-            // Since these are mock files, we simulate a download
-            const blob = new Blob([`Content of ${file.name}`], { type: 'text/plain' });
+            // Since these are mock files, we force a .txt extension 
+            const fileName = `${file.name}.txt`;
+
+            const content = `HELIOS SIMULATED FILE\n` +
+                `=====================\n\n` +
+                `File Name: ${file.name}\n` +
+                `Created Date: ${file.date}\n` +
+                `Reported Size: ${file.size}\n\n` +
+                `This is a placeholder for the actual folder/document.`;
+
+            const blob = new Blob(["\ufeff" + content], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = file.name;
+            a.download = fileName;
             a.style.display = 'none';
             document.body.appendChild(a);
             a.click();
             setTimeout(() => {
-                document.body.removeChild(a);
+                if (document.body.contains(a)) document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-            }, 100);
-            console.log(`Simulated download started: ${file.name}`);
+            }, 200);
+            console.log(`Simulated download started: ${fileName}`);
         } catch (err) {
             console.error("Download simulation failed:", err);
         }

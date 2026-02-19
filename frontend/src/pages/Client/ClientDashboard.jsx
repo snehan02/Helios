@@ -130,25 +130,56 @@ const ClientDashboard = () => {
     const handleDownloadReport = () => {
         try {
             console.log("Generating report for:", clientName);
-            const reportData = {
-                clientName,
-                generatedAt: new Date().toISOString(),
-                dashboardData: layout,
-                calendarEvents: events
-            };
-            const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+
+            let reportText = `HELIOS PROJECT REPORT\n`;
+            reportText += `=====================\n\n`;
+            reportText += `Client: ${clientName || 'Partner'}\n`;
+            reportText += `Generated At: ${new Date().toLocaleString()}\n`;
+            reportText += `\n---------------------\n\n`;
+
+            reportText += `DASHBOARD METRICS & ASSETS\n`;
+            layout.forEach(widget => {
+                reportText += `\n[${widget.title.toUpperCase()}]\n`;
+                if (widget.data && widget.data.length > 0) {
+                    widget.data.forEach(item => {
+                        reportText += `- ${item.label}: ${item.value}\n`;
+                    });
+                } else {
+                    reportText += `No data available.\n`;
+                }
+            });
+
+            reportText += `\n---------------------\n\n`;
+            reportText += `CALENDAR LOGS\n`;
+            if (events && events.length > 0) {
+                // Sort events by date descending
+                const sortedEvents = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
+                sortedEvents.forEach(event => {
+                    const dateStr = new Date(event.date).toLocaleDateString();
+                    reportText += `\nDate: ${dateStr}\n`;
+                    reportText += `Status: ${event.status.toUpperCase()}\n`;
+                    reportText += `Details: ${event.details || 'No details provided.'}\n`;
+                });
+            } else {
+                reportText += `No activity logged yet.\n`;
+            }
+
+            const blobData = "\ufeff" + reportText; // Add BOM for better Windows support
+            const blob = new Blob([blobData], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = `${(clientName || 'Client').replace(/\s+/g, '_')}_Report.json`;
+            link.download = `${(clientName || 'Client').replace(/\s+/g, '_')}_Report.txt`;
             link.style.display = 'none';
             document.body.appendChild(link);
             link.click();
             setTimeout(() => {
-                document.body.removeChild(link);
+                if (document.body.contains(link)) {
+                    document.body.removeChild(link);
+                }
                 URL.revokeObjectURL(url);
-            }, 100);
-            console.log("Download triggered");
+            }, 200);
+            console.log("Improved text report download triggered");
         } catch (error) {
             console.error("Download failed:", error);
             alert("Download failed. Please check the console.");

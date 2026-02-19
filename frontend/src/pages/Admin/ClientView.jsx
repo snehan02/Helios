@@ -124,21 +124,56 @@ const ClientView = () => {
     };
 
     const handleDownloadReport = () => {
-        const reportData = {
-            clientName: client?.name || 'Client',
-            generatedAt: new Date().toISOString(),
-            dashboardData: layout,
-            calendarEvents: events
-        };
-        const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${(client?.name || 'Client').replace(/\s+/g, '_')}_Data.json`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+        try {
+            const clientName = client?.name || 'Client';
+            let reportText = `HELIOS ADMIN DATA EXPORT\n`;
+            reportText += `========================\n\n`;
+            reportText += `Client: ${clientName}\n`;
+            reportText += `Generated At: ${new Date().toLocaleString()}\n`;
+            reportText += `\n---------------------\n\n`;
+
+            reportText += `DASHBOARD LAYOUT & WIDGETS\n`;
+            layout.forEach(widget => {
+                reportText += `\n[${widget.title.toUpperCase()}]\n`;
+                if (widget.data && widget.data.length > 0) {
+                    widget.data.forEach(item => {
+                        reportText += `- ${item.label}: ${item.value}\n`;
+                    });
+                } else {
+                    reportText += `No data available.\n`;
+                }
+            });
+
+            reportText += `\n---------------------\n\n`;
+            reportText += `PROJECT CALENDAR\n`;
+            if (events && events.length > 0) {
+                const sortedEvents = [...events].sort((a, b) => new Date(b.date) - new Date(a.date));
+                sortedEvents.forEach(event => {
+                    const dateStr = new Date(event.date).toLocaleDateString();
+                    reportText += `\nDate: ${dateStr}\n`;
+                    reportText += `Status: ${event.status.toUpperCase()}\n`;
+                    reportText += `Details: ${event.details || 'No details provided.'}\n`;
+                });
+            } else {
+                reportText += `No activity logged yet.\n`;
+            }
+
+            const blob = new Blob(["\ufeff" + reportText], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${clientName.replace(/\s+/g, '_')}_Report.txt`;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            setTimeout(() => {
+                if (document.body.contains(link)) document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }, 200);
+        } catch (error) {
+            console.error("Export failed:", error);
+            alert("Export failed.");
+        }
     };
 
     return (
