@@ -146,7 +146,7 @@ const StatusCalendar = ({ events, onDateClick, onSave, role = 'client' }) => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-zinc-950/80 backdrop-blur-md md:p-4"
+                        className="fixed inset-0 z-[60] flex items-end md:items-center justify-center bg-zinc-950/80 backdrop-blur-md md:p-4"
                         onClick={closePopup}
                     >
                         <motion.div
@@ -154,7 +154,7 @@ const StatusCalendar = ({ events, onDateClick, onSave, role = 'client' }) => {
                             animate={{ y: 0 }}
                             exit={{ y: "100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="bg-zinc-900 border-t md:border border-zinc-400/20 rounded-t-[2.5rem] md:rounded-[2.5rem] w-full max-w-lg shadow-[0_-10px_40px_rgba(0,0,0,0.5)] md:shadow-[0_40px_80px_rgba(0,0,0,0.7)] relative flex flex-col max-h-[85vh]"
+                            className="bg-zinc-900 md:border border-zinc-400/20 md:rounded-[2.5rem] w-full md:max-w-lg shadow-none md:shadow-[0_40px_80px_rgba(0,0,0,0.7)] relative flex flex-col h-full md:h-auto md:max-h-[90vh]"
                             onClick={e => e.stopPropagation()}
                         >
                             {/* Modal Silver Glow */}
