@@ -80,15 +80,15 @@ const StatusCalendar = ({ events, onDateClick, onSave, role = 'client' }) => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-7 gap-4 mb-4">
+            <div className="grid grid-cols-7 gap-1 md:gap-4 mb-2 md:mb-4">
                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                    <div key={day} className="text-center text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                    <div key={day} className="text-center text-[8px] md:text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
                         {day}
                     </div>
                 ))}
             </div>
 
-            <div className="grid grid-cols-7 gap-4">
+            <div className="grid grid-cols-7 gap-1 md:gap-4">
                 {days.map((day, idx) => {
                     const isCurrentMonth = isSameMonth(day, currentMonth);
                     const dayEvents = getEventsForDay(day);
@@ -152,7 +152,7 @@ const StatusCalendar = ({ events, onDateClick, onSave, role = 'client' }) => {
                         <motion.div
                             initial={{ scale: 0.9, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
-                            className="bg-zinc-900/95 border border-zinc-400/20 p-10 rounded-[2.5rem] w-full max-w-lg shadow-[0_40px_80px_rgba(0,0,0,0.7)] relative overflow-hidden"
+                            className="bg-zinc-900/95 border border-zinc-400/20 p-6 md:p-10 rounded-[2.5rem] w-full max-w-lg shadow-[0_40px_80px_rgba(0,0,0,0.7)] relative overflow-hidden max-h-[90vh] overflow-y-auto custom-scrollbar-silver"
                             onClick={e => e.stopPropagation()}
                         >
                             {/* Modal Silver Glow */}

@@ -70,7 +70,7 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className="glass-panel w-full max-w-lg rounded-2xl relative z-10 overflow-hidden"
+                        className="glass-panel w-full md:max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl relative z-10"
                     >
                         <div className="flex items-center justify-between p-6 border-b border-zinc-700">
                             <h2 className="text-xl font-bold text-white">Add New Client</h2>
@@ -120,7 +120,7 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
                             </div>
 
                             {/* Client Industry & Status */}
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-zinc-300 mb-1">Industry</label>
                                     <input
@@ -156,7 +156,7 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
                             </div>
 
                             {/* Brand Colors */}
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-zinc-300 mb-1">Primary Color</label>
                                     <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2">

@@ -128,22 +128,22 @@ const ClientView = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 h-full">
                 {/* Main Content: Calendar */}
                 <div className="lg:col-span-2 flex flex-col group">
-                    <div className="mb-10 flex justify-between items-end bg-zinc-900/40 p-8 rounded-3xl border border-zinc-400/10 relative overflow-hidden">
+                    <div className="mb-10 flex flex-col md:flex-row md:justify-between md:items-end gap-6 bg-zinc-900/40 p-8 rounded-3xl border border-zinc-400/10 relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-zinc-400/30 to-transparent" />
-                        <div>
+                        <div className="w-full md:w-auto">
                             <div className="flex items-center gap-3 mb-2">
                                 <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
-                                <h1 className="text-3xl font-black text-white tracking-tighter uppercase">{client?.name || 'Loading...'}</h1>
+                                <h1 className="text-2xl md:text-3xl font-black text-white tracking-tighter uppercase break-words">{client?.name || 'Loading...'}</h1>
                             </div>
                             <p className="text-zinc-500 font-medium text-sm">
                                 Managing project status and resources for <span className="text-zinc-300">partner view</span>.
                             </p>
                         </div>
 
-                        <div className="flex gap-4">
+                        <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
                             <button
                                 onClick={fetchData}
-                                className="btn-silver px-5 py-3 rounded-2xl flex items-center gap-2 text-xs font-bold uppercase tracking-widest"
+                                className="btn-silver w-full sm:w-auto px-5 py-3 rounded-2xl flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /></svg>
                                 Sync
@@ -151,7 +151,7 @@ const ClientView = () => {
                             <button
                                 onClick={() => setIsLayoutMode(!isLayoutMode)}
                                 className={clsx(
-                                    "btn-silver px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all",
+                                    "btn-silver w-full sm:w-auto px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all",
                                     isLayoutMode ? "opacity-100 ring-2 ring-zinc-400" : "opacity-80"
                                 )}
                             >
@@ -231,8 +231,8 @@ const ClientView = () => {
 
                     {/* Add Widget Modal */}
                     {showWidgetModal && (
-                        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
-                            <div className="bg-gray-900 border border-gray-800 p-6 rounded-xl w-96 shadow-2xl">
+                        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm p-4">
+                            <div className="bg-gray-900 border border-gray-800 p-6 rounded-xl w-full max-w-sm shadow-2xl">
                                 <h3 className="text-xl font-bold text-white mb-4">Add New Widget</h3>
                                 <div className="space-y-4">
                                     <div>
