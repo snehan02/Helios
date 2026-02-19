@@ -71,7 +71,7 @@ const Notifications = () => {
                                 <div className="p-4 text-center text-gray-500 text-sm">No notifications</div>
                             ) : (
                                 notifications.map(notif => (
-                                    <div key={notif.id} className={`p-4 border-b border-gray-700/50 hover:bg-gray-700/30 transition-colors ${notif.read ? 'opacity-60' : 'bg-blue-500/5'}`}>
+                                    <div key={notif.id} className={`p-4 border-b border-gray-700/50 hover:bg-gray-700/30 transition-colors ${notif.read ? 'opacity-60' : 'bg-zinc-500/10'}`}>
                                         <p className="text-sm text-gray-200">{notif.message}</p>
                                         <p className="text-xs text-gray-500 mt-1">{notif.time}</p>
                                     </div>

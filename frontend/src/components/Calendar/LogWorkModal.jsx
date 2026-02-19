@@ -76,7 +76,7 @@ const LogWorkModal = ({ isOpen, onClose, onSave, date, initialData }) => {
                                     rows={4}
                                     value={details}
                                     onChange={(e) => setDetails(e.target.value)}
-                                    className="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 placeholder-gray-500"
+                                    className="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-zinc-400 placeholder-gray-500"
                                     placeholder="Enter task details, SEO stats, or links..."
                                 />
                             </div>

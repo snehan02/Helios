@@ -9,7 +9,7 @@ export const ImageUpload = ({
 }) => {
     if (value) {
         return (
-            <div className="relative w-full h-48 border border-gray-700 rounded-lg overflow-hidden bg-gray-900 flex items-center justify-center group">
+            <div className="relative w-full h-48 border border-zinc-700 rounded-lg overflow-hidden bg-zinc-900 flex items-center justify-center group">
                 <div className="absolute top-2 right-2 z-10">
                     <button
                         onClick={onRemove}
@@ -29,7 +29,7 @@ export const ImageUpload = ({
     }
 
     return (
-        <div className="w-full h-32 border-2 border-dashed border-gray-600 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 hover:bg-gray-800/50 transition-all relative">
+        <div className="w-full h-32 border-2 border-dashed border-zinc-600 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-zinc-400 hover:bg-zinc-800/50 transition-all relative">
             <input
                 type="file"
                 accept="image/*"
@@ -43,9 +43,9 @@ export const ImageUpload = ({
                 }}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
-            <div className="flex flex-col items-center text-gray-400">
+            <div className="flex flex-col items-center text-zinc-400">
                 <span className="text-sm font-medium">Click to upload logo</span>
-                <span className="text-xs text-gray-500 mt-1">SVG, PNG, JPG or GIF (max 4MB)</span>
+                <span className="text-xs text-zinc-500 mt-1">SVG, PNG, JPG or GIF (max 4MB)</span>
             </div>
         </div>
     );

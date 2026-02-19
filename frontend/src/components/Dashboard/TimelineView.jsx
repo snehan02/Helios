@@ -65,7 +65,7 @@ const TimelineView = ({ events = [] }) => {
                                             </p>
                                         ))}
                                         {event.notes.length > 2 && (
-                                            <p className="text-xs text-blue-500 italic">+{event.notes.length - 2} more notes</p>
+                                            <p className="text-xs text-zinc-400 italic">+{event.notes.length - 2} more notes</p>
                                         )}
                                     </div>
                                 ) : (

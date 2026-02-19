@@ -128,49 +128,49 @@ const ClientDashboard = () => {
     };
 
     return (
-        <div className="min-h-[calc(100vh-8rem)] bg-slate-950 p-4">
+        <div className="min-h-[calc(100vh-8rem)] bg-transparent p-4">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 h-full">
                 {/* Main Content: Calendar */}
                 <div className="lg:col-span-2 flex flex-col group">
-                    <div className="mb-10 flex justify-between items-end bg-slate-900/40 p-8 rounded-3xl border border-slate-400/10 relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-slate-400/30 to-transparent" />
+                    <div className="glass-panel mb-6 md:mb-10 flex flex-col md:flex-row justify-between items-start md:items-end p-6 md:p-8 rounded-3xl relative overflow-hidden gap-6">
+                        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-zinc-400/30 to-transparent" />
                         <div>
                             <div className="flex items-center gap-3 mb-2">
                                 <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399]" />
-                                <h1 className="text-3xl font-black text-white tracking-tighter">PROJECT HUB</h1>
+                                <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tighter">PROJECT HUB</h1>
                             </div>
-                            <p className="text-slate-500 font-medium text-sm flex items-center gap-2">
-                                Welcome, <span className="text-slate-300 capitalize">{clientName || 'Partner'}</span>
+                            <p className="text-zinc-500 font-medium text-sm flex items-center gap-2">
+                                Welcome, <span className="text-zinc-300 capitalize">{clientName || 'Partner'}</span>
                             </p>
                         </div>
 
-                        <div className="flex gap-4">
+                        <div className="flex gap-4 w-full md:w-auto">
                             <button
                                 onClick={() => clientId && fetchCalendarEvents(clientId)}
-                                className="btn-silver px-5 py-3 rounded-2xl flex items-center gap-2 text-xs font-bold uppercase tracking-widest"
+                                className="flex-1 md:flex-none btn-silver px-5 py-3 rounded-2xl flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest"
                             >
                                 <RefreshCw size={14} className="animate-spin-slow" />
                                 Sync
                             </button>
                             <button
                                 onClick={handleBlocked}
-                                className="btn-silver px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 active:scale-95"
+                                className="flex-1 md:flex-none btn-silver px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 active:scale-95"
                             >
                                 Report Blocker
                             </button>
                         </div>
                     </div>
 
-                    <div className="flex-1 bg-slate-900/20 rounded-3xl overflow-hidden">
+                    <div className="flex-1 glass-panel rounded-3xl overflow-hidden p-1">
                         <StatusCalendar events={events} onSave={handleCalendarSave} role="client" />
                     </div>
                 </div>
 
                 {/* Sidebar: Widgets */}
                 <div className="flex flex-col gap-8 lg:h-full lg:overflow-y-auto custom-scrollbar-silver pr-2">
-                    <div className="bg-slate-900/40 p-6 rounded-2xl border border-slate-400/10 mb-2">
-                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Quick Access</p>
-                        <h2 className="text-lg font-bold text-white tracking-tight">Project Assets</h2>
+                    <div className="glass-panel p-6 rounded-2xl mb-2">
+                        <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-1">Quick Access</p>
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">Project Assets</h2>
                     </div>
                     {layout.map((widget) => {
                         if (!widget.data || widget.data.length === 0) return null;

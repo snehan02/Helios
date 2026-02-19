@@ -124,19 +124,19 @@ const ClientView = () => {
     };
 
     return (
-        <div className="min-h-[calc(100vh-8rem)] bg-slate-950 p-4">
+        <div className="min-h-[calc(100vh-8rem)] bg-zinc-950 p-4">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 h-full">
                 {/* Main Content: Calendar */}
                 <div className="lg:col-span-2 flex flex-col group">
-                    <div className="mb-10 flex justify-between items-end bg-slate-900/40 p-8 rounded-3xl border border-slate-400/10 relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-slate-400/30 to-transparent" />
+                    <div className="mb-10 flex justify-between items-end bg-zinc-900/40 p-8 rounded-3xl border border-zinc-400/10 relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-zinc-400/30 to-transparent" />
                         <div>
                             <div className="flex items-center gap-3 mb-2">
-                                <div className="w-2 h-2 rounded-full bg-blue-400 shadow-[0_0_10px_#60a5fa]" />
+                                <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
                                 <h1 className="text-3xl font-black text-white tracking-tighter uppercase">{client?.name || 'Loading...'}</h1>
                             </div>
-                            <p className="text-slate-500 font-medium text-sm">
-                                Managing project status and resources for <span className="text-slate-300">partner view</span>.
+                            <p className="text-zinc-500 font-medium text-sm">
+                                Managing project status and resources for <span className="text-zinc-300">partner view</span>.
                             </p>
                         </div>
 
@@ -152,7 +152,7 @@ const ClientView = () => {
                                 onClick={() => setIsLayoutMode(!isLayoutMode)}
                                 className={clsx(
                                     "btn-silver px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all",
-                                    isLayoutMode ? "opacity-100 ring-2 ring-blue-500" : "opacity-80"
+                                    isLayoutMode ? "opacity-100 ring-2 ring-zinc-400" : "opacity-80"
                                 )}
                             >
                                 {isLayoutMode ? 'Finish Layout' : 'Modify Layout'}
@@ -241,7 +241,7 @@ const ClientView = () => {
                                             type="text"
                                             value={newWidgetTitle}
                                             onChange={(e) => setNewWidgetTitle(e.target.value)}
-                                            className="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white"
+                                            className="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none focus:border-zinc-500"
                                             placeholder="e.g. Weekly Reports"
                                         />
                                     </div>
@@ -250,7 +250,7 @@ const ClientView = () => {
                                         <select
                                             value={newWidgetType}
                                             onChange={(e) => setNewWidgetType(e.target.value)}
-                                            className="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white"
+                                            className="w-full bg-gray-800 border border-gray-700 rounded p-2 text-white focus:outline-none focus:border-zinc-500"
                                         >
                                             <option value="custom">Custom List (Text)</option>
                                             <option value="resource">Links / Resources</option>
@@ -267,7 +267,7 @@ const ClientView = () => {
                                         </button>
                                         <button
                                             onClick={handleAddWidget}
-                                            className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg"
+                                            className="flex-1 px-4 py-2 btn-silver text-white rounded-lg"
                                         >
                                             Add Widget
                                         </button>

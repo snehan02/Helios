@@ -61,14 +61,15 @@ const Dashboard = () => {
     return (
         <div className="space-y-8">
             {/* Header Section */}
-            <div className="flex items-center justify-between">
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-                    <p className="text-gray-500 dark:text-gray-400 mt-1">Manage your clients and project statuses.</p>
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+                    <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm md:text-base">Manage your clients and project statuses.</p>
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="btn-silver flex items-center gap-2 px-4 py-2 rounded-lg"
+                    className="btn-silver flex items-center justify-center gap-2 px-4 py-2 rounded-lg w-full md:w-auto"
                 >
                     <Plus size={20} />
                     <span>Add Client</span>
@@ -80,14 +81,14 @@ const Dashboard = () => {
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 p-6 rounded-xl flex items-center justify-between shadow-sm dark:shadow-none"
+                    className="bg-metric-black p-6 rounded-xl flex items-center justify-between"
                 >
                     <div>
-                        <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Active Clients</p>
-                        <h3 className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{globalStats.Active || 0}</h3>
+                        <p className="text-zinc-500 dark:text-zinc-400 text-sm font-medium">Active Clients</p>
+                        <h3 className="text-3xl font-bold text-zinc-900 dark:text-white mt-1">{globalStats.Active || 0}</h3>
                     </div>
-                    <div className="h-10 w-10 bg-green-500/10 dark:bg-green-500/20 rounded-full flex items-center justify-center text-green-600 dark:text-green-400">
-                        <div className="h-3 w-3 bg-green-500 rounded-full animate-pulse" />
+                    <div className="h-10 w-10 bg-zinc-100 dark:bg-zinc-700/50 rounded-full flex items-center justify-center text-zinc-600 dark:text-white border border-zinc-200 dark:border-zinc-600">
+                        <div className="h-3 w-3 bg-zinc-400 dark:bg-white rounded-full animate-pulse" />
                     </div>
                 </motion.div>
 
@@ -95,14 +96,14 @@ const Dashboard = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 p-6 rounded-xl flex items-center justify-between shadow-sm dark:shadow-none"
+                    className="bg-metric-black p-6 rounded-xl flex items-center justify-between"
                 >
                     <div>
-                        <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Onboarding</p>
-                        <h3 className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{globalStats.Onboarding || 0}</h3>
+                        <p className="text-zinc-500 dark:text-zinc-400 text-sm font-medium">Onboarding</p>
+                        <h3 className="text-3xl font-bold text-zinc-900 dark:text-white mt-1">{globalStats.Onboarding || 0}</h3>
                     </div>
-                    <div className="h-10 w-10 bg-yellow-500/10 dark:bg-yellow-500/20 rounded-full flex items-center justify-center text-yellow-600 dark:text-yellow-400">
-                        <div className="h-3 w-3 bg-yellow-500 rounded-full" />
+                    <div className="h-10 w-10 bg-zinc-100 dark:bg-zinc-700/50 rounded-full flex items-center justify-center text-zinc-600 dark:text-white border border-zinc-200 dark:border-zinc-600">
+                        <div className="h-3 w-3 bg-zinc-400 dark:bg-white rounded-full" />
                     </div>
                 </motion.div>
 
@@ -110,13 +111,13 @@ const Dashboard = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 p-6 rounded-xl flex items-center justify-between shadow-sm dark:shadow-none"
+                    className="bg-metric-black p-6 rounded-xl flex items-center justify-between"
                 >
                     <div>
-                        <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Clients</p>
-                        <h3 className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{clients.length}</h3>
+                        <p className="text-zinc-500 dark:text-zinc-400 text-sm font-medium">Total Clients</p>
+                        <h3 className="text-3xl font-bold text-zinc-900 dark:text-white mt-1">{clients.length}</h3>
                     </div>
-                    <div className="h-10 w-10 bg-blue-500/10 dark:bg-blue-500/20 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-400">
+                    <div className="h-10 w-10 bg-zinc-100 dark:bg-zinc-700/50 rounded-full flex items-center justify-center text-zinc-600 dark:text-white border border-zinc-200 dark:border-zinc-600">
                         <Calendar size={20} />
                     </div>
                 </motion.div>
@@ -124,14 +125,14 @@ const Dashboard = () => {
 
             {/* Clients Grid */}
             <section>
-                <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Clients</h2>
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={18} />
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-4">
+                    <h2 className="text-xl font-semibold text-zinc-800 dark:text-zinc-200">Clients</h2>
+                    <div className="relative w-full md:w-auto">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500" size={18} />
                         <input
                             type="text"
                             placeholder="Search clients..."
-                            className="bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:border-blue-500 transition-colors"
+                            className="w-full md:w-64 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:border-zinc-400 dark:focus:border-white/50 transition-colors"
                         />
                     </div>
                 </div>
@@ -142,7 +143,7 @@ const Dashboard = () => {
                             key={client._id}
                             whileHover={{ y: -4 }}
                             onClick={() => navigate(`/admin/client/${client._id}`)}
-                            className="bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:border-blue-500/50 transition-all cursor-pointer relative shadow-sm hover:shadow-md dark:shadow-none"
+                            className="client-card p-6 hover:shadow-md hover:scale-[1.02] cursor-pointer relative group"
                         >
                             <div className="flex items-start justify-between mb-4">
                                 <div className="flex items-center gap-3">
@@ -153,13 +154,13 @@ const Dashboard = () => {
                                             e.target.onerror = null;
                                             e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(client.name)}&background=random`;
                                         }}
-                                        className="w-12 h-12 rounded-lg bg-gray-100 dark:bg-gray-700 object-cover"
+                                        className="w-12 h-12 rounded-lg bg-zinc-100 dark:bg-zinc-800 object-cover"
                                     />
                                     <div>
-                                        <h3 className="font-semibold text-gray-900 dark:text-white">{client.name}</h3>
-                                        <span className={`text-xs px-2 py-0.5 rounded-full ${client.status === 'Active' ? 'bg-green-500/10 dark:bg-green-500/20 text-green-600 dark:text-green-400' :
-                                            client.status === 'Onboarding' ? 'bg-yellow-500/10 dark:bg-yellow-500/20 text-yellow-600 dark:text-yellow-400' :
-                                                'bg-gray-600/10 dark:bg-gray-600/20 text-gray-500 dark:text-gray-400'
+                                        <h3 className="font-semibold text-zinc-900 dark:text-white">{client.name}</h3>
+                                        <span className={`text-xs px-2 py-0.5 rounded-full ${client.status === 'Active' ? 'bg-green-100 dark:bg-green-500/10 text-green-700 dark:text-green-400' :
+                                            client.status === 'Onboarding' ? 'bg-yellow-100 dark:bg-yellow-500/10 text-yellow-700 dark:text-yellow-400' :
+                                                'bg-zinc-100 dark:bg-zinc-600/10 text-zinc-600 dark:text-zinc-400'
                                             }`}>
                                             {client.status}
                                         </span>
@@ -171,7 +172,7 @@ const Dashboard = () => {
                                             e.stopPropagation();
                                             setOpenMenuId(openMenuId === client._id ? null : client._id);
                                         }}
-                                        className="text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                                        className="text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white p-1 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
                                     >
                                         <MoreVertical size={18} />
                                     </button>
@@ -182,7 +183,7 @@ const Dashboard = () => {
                                                 initial={{ opacity: 0, scale: 0.9, y: -10 }}
                                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                                 exit={{ opacity: 0, scale: 0.9, y: -10 }}
-                                                className="absolute right-0 mt-2 w-36 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-20 overflow-hidden"
+                                                className="absolute right-0 mt-2 w-36 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-xl z-20 overflow-hidden"
                                                 onClick={(e) => e.stopPropagation()}
                                             >
                                                 <button
@@ -191,7 +192,7 @@ const Dashboard = () => {
                                                         setIsEditModalOpen(true);
                                                         setOpenMenuId(null);
                                                     }}
-                                                    className="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-2 transition-colors"
+                                                    className="w-full px-4 py-2 text-left text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center gap-2 transition-colors"
                                                 >
                                                     <Edit2 size={14} />
                                                     <span>Edit</span>
@@ -212,12 +213,12 @@ const Dashboard = () => {
                                 </div>
                             </div>
 
-                            <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700/50">
+                            <div className="flex items-center justify-between text-sm text-zinc-500 dark:text-zinc-400 mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
                                 <div className="flex items-center gap-1">
                                     <Calendar size={14} />
                                     <span>Next Update: Today</span>
                                 </div>
-                                <div className="text-blue-600 dark:text-blue-400 font-medium">
+                                <div className="text-zinc-900 dark:text-white font-medium">
                                     {client.tasksPending} Pending Tasks
                                 </div>
                             </div>
@@ -228,17 +229,17 @@ const Dashboard = () => {
 
             <section>
                 <div className="flex items-center gap-3 mb-4">
-                    <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Task Summary</h2>
+                    <h2 className="text-xl font-semibold text-zinc-800 dark:text-zinc-200">Task Summary</h2>
                     <button
                         onClick={() => setIsFilesModalOpen(true)}
-                        className="p-1.5 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg text-gray-600 dark:text-gray-400 transition-colors"
+                        className="p-1.5 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-lg text-zinc-500 dark:text-zinc-400 transition-colors"
                         title="View All Files"
                     >
                         <FileText size={16} />
                     </button>
                 </div>
-                <div className="bg-white dark:bg-gray-800/30 border border-gray-200 dark:border-gray-700 rounded-xl p-6 shadow-sm dark:shadow-none">
-                    <div className="text-center text-gray-500 dark:text-gray-500 py-8">
+                <div className="glass-panel rounded-xl p-6">
+                    <div className="text-center text-zinc-500 py-8">
                         <p>Select a client to view their detailed task calendar.</p>
                     </div>
                 </div>

@@ -13,7 +13,7 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
         password: '',
         status: 'Onboarding',
         logoUrl: '',
-        primaryColor: '#3B82F6',
+        primaryColor: '#e4e4e7',
         secondaryColor: '#ffffff'
     });
 
@@ -50,7 +50,7 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
             onSave(response.data.client);
             onClose();
             // Reset form
-            setFormData({ name: '', email: '', password: '', industry: '', status: 'Onboarding', logoUrl: '', primaryColor: '#3B82F6', secondaryColor: '#ffffff' });
+            setFormData({ name: '', email: '', password: '', industry: '', status: 'Onboarding', logoUrl: '', primaryColor: '#e4e4e7', secondaryColor: '#ffffff' });
         } catch (error) {
             console.error("Error creating client", error);
             alert(error.response?.data?.message || "Failed to create client");
@@ -70,11 +70,11 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className="bg-gray-800 border border-gray-700 rounded-2xl w-full max-w-lg shadow-2xl relative z-10 overflow-hidden"
+                        className="glass-panel w-full max-w-lg rounded-2xl relative z-10 overflow-hidden"
                     >
-                        <div className="flex items-center justify-between p-6 border-b border-gray-700">
+                        <div className="flex items-center justify-between p-6 border-b border-zinc-700">
                             <h2 className="text-xl font-bold text-white">Add New Client</h2>
-                            <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
+                            <button onClick={onClose} className="text-zinc-400 hover:text-white transition-colors">
                                 <X size={20} />
                             </button>
                         </div>
@@ -82,39 +82,39 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
                         <form onSubmit={handleSubmit} className="p-6 space-y-4">
                             {/* Name */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-1">Client Name</label>
+                                <label className="block text-sm font-medium text-zinc-300 mb-1">Client Name</label>
                                 <input
                                     type="text"
                                     required
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
+                                    className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-white transition-colors"
                                     placeholder="e.g. Acme Corp"
                                 />
                             </div>
 
                             {/* Email */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-1">Admin Email</label>
+                                <label className="block text-sm font-medium text-zinc-300 mb-1">Admin Email</label>
                                 <input
                                     type="email"
                                     required
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
+                                    className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-white transition-colors"
                                     placeholder="admin@client.com"
                                 />
                             </div>
 
                             {/* Client Password (Initial) */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-1">Initial Password</label>
+                                <label className="block text-sm font-medium text-zinc-300 mb-1">Initial Password</label>
                                 <input
                                     type="password"
                                     required
                                     value={formData.password}
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
+                                    className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-white transition-colors"
                                     placeholder="Create a strong password"
                                 />
                             </div>
@@ -122,21 +122,21 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
                             {/* Client Industry & Status */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-1">Industry</label>
+                                    <label className="block text-sm font-medium text-zinc-300 mb-1">Industry</label>
                                     <input
                                         type="text"
                                         value={formData.industry}
                                         onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                                        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
+                                        className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-white transition-colors"
                                         placeholder="e.g. Technology"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-1">Account Status</label>
+                                    <label className="block text-sm font-medium text-zinc-300 mb-1">Account Status</label>
                                     <select
                                         value={formData.status}
                                         onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
+                                        className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-white transition-colors"
                                     >
                                         <option value="Onboarding">Onboarding</option>
                                         <option value="Active">Active</option>
@@ -147,7 +147,7 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
 
                             {/* Logo Upload */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-1">Client Logo</label>
+                                <label className="block text-sm font-medium text-zinc-300 mb-1">Client Logo</label>
                                 <ImageUpload
                                     value={formData.logoUrl}
                                     onChange={(url) => setFormData({ ...formData, logoUrl: url })}
@@ -158,27 +158,27 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
                             {/* Brand Colors */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-1">Primary Color</label>
-                                    <div className="flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2">
+                                    <label className="block text-sm font-medium text-zinc-300 mb-1">Primary Color</label>
+                                    <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2">
                                         <input
                                             type="color"
                                             value={formData.primaryColor}
                                             onChange={(e) => setFormData({ ...formData, primaryColor: e.target.value })}
                                             className="w-6 h-6 rounded cursor-pointer bg-transparent border-none p-0"
                                         />
-                                        <span className="text-sm text-gray-400 font-mono">{formData.primaryColor}</span>
+                                        <span className="text-sm text-zinc-400 font-mono">{formData.primaryColor}</span>
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-300 mb-1">Secondary Color</label>
-                                    <div className="flex items-center gap-2 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2">
+                                    <label className="block text-sm font-medium text-zinc-300 mb-1">Secondary Color</label>
+                                    <div className="flex items-center gap-2 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2">
                                         <input
                                             type="color"
                                             value={formData.secondaryColor}
                                             onChange={(e) => setFormData({ ...formData, secondaryColor: e.target.value })}
                                             className="w-6 h-6 rounded cursor-pointer bg-transparent border-none p-0"
                                         />
-                                        <span className="text-sm text-gray-400 font-mono">{formData.secondaryColor}</span>
+                                        <span className="text-sm text-zinc-400 font-mono">{formData.secondaryColor}</span>
                                     </div>
                                 </div>
                             </div>
@@ -187,7 +187,7 @@ const CreateClientModal = ({ isOpen, onClose, onSave }) => {
                                 <button
                                     type="button"
                                     onClick={onClose}
-                                    className="px-4 py-2 rounded-lg text-gray-300 hover:bg-gray-700 font-medium transition-colors"
+                                    className="px-4 py-2 rounded-lg text-zinc-300 hover:bg-zinc-700 font-medium transition-colors"
                                 >
                                     Cancel
                                 </button>

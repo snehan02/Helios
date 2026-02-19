@@ -23,11 +23,11 @@ const FilesModal = ({ isOpen, onClose, clients }) => {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden flex flex-col max-h-[80vh]"
+                        className="glass-panel w-full max-w-2xl rounded-2xl overflow-hidden flex flex-col max-h-[80vh]"
                     >
                         <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
                             <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                <FileText className="text-blue-500" />
+                                <FileText className="text-zinc-500 dark:text-zinc-400" />
                                 File Repository
                             </h2>
                             <button onClick={onClose} className="text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
@@ -39,9 +39,9 @@ const FilesModal = ({ isOpen, onClose, clients }) => {
                             {allFiles.length > 0 ? (
                                 <div className="space-y-3">
                                     {allFiles.map((file, idx) => (
-                                        <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-blue-500/30 transition-colors group">
+                                        <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-700 hover:border-zinc-500/30 transition-colors group">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                                                <div className="w-10 h-10 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400">
                                                     <FileText size={20} />
                                                 </div>
                                                 <div>
@@ -49,7 +49,7 @@ const FilesModal = ({ isOpen, onClose, clients }) => {
                                                     <p className="text-xs text-gray-500 dark:text-gray-400">{file.date} • {file.size}</p>
                                                 </div>
                                             </div>
-                                            <button className="p-2 text-gray-400 hover:text-blue-500 transition-colors">
+                                            <button className="p-2 text-gray-400 hover:text-white transition-colors">
                                                 <Download size={20} />
                                             </button>
                                         </div>
@@ -63,7 +63,7 @@ const FilesModal = ({ isOpen, onClose, clients }) => {
                             )}
                         </div>
 
-                        <div className="p-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50">
+                        <div className="p-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50">
                             <p className="text-xs text-center text-gray-500 dark:text-gray-400">
                                 Showing {allFiles.length} documents across all clients.
                             </p>
