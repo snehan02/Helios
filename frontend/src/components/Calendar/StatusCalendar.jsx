@@ -152,11 +152,11 @@ const StatusCalendar = ({ events, onDateClick, onSave, role = 'client' }) => {
                         <motion.div
                             initial={{ scale: 0.9, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
-                            className="bg-zinc-900/95 border border-zinc-400/20 rounded-[2.5rem] w-full max-w-lg shadow-[0_40px_80px_rgba(0,0,0,0.7)] relative overflow-hidden flex flex-col max-h-[90vh]"
+                            className="bg-zinc-900/95 border border-zinc-400/20 rounded-[2.5rem] w-full max-w-lg shadow-[0_40px_80px_rgba(0,0,0,0.7)] relative overflow-hidden flex flex-col max-h-[85vh] md:max-h-[90vh]"
                             onClick={e => e.stopPropagation()}
                         >
                             {/* Modal Silver Glow */}
-                            <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-zinc-400/40 to-transparent z-20" />
+                            <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-zinc-400/40 to-transparent z-20 pointer-events-none" />
 
                             <div className="flex-1 overflow-y-auto custom-scrollbar-silver p-6 md:p-10">
 

@@ -15,6 +15,7 @@ const Dashboard = () => {
     const [isFilesModalOpen, setIsFilesModalOpen] = useState(false);
     const [selectedClient, setSelectedClient] = useState(null);
     const [openMenuId, setOpenMenuId] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const [clients, setClients] = useState([]);
     const [globalStats, setGlobalStats] = useState({ Active: 0, Onboarding: 0 });
@@ -132,13 +133,18 @@ const Dashboard = () => {
                         <input
                             type="text"
                             placeholder="Search clients..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full md:w-64 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-900 dark:text-white rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:border-zinc-400 dark:focus:border-white/50 transition-colors"
                         />
                     </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {clients.map((client) => (
+                    {clients.filter(client =>
+                        client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        client.status.toLowerCase().includes(searchQuery.toLowerCase())
+                    ).map((client) => (
                         <motion.div
                             key={client._id}
                             whileHover={{ y: -4 }}
