@@ -20,27 +20,36 @@ const Login = () => {
         setLoading(true);
         setError('');
 
+        const performLogin = async (retryCount = 0) => {
+            try {
+                const response = await api.post('/auth/login', { email, password });
 
+                // Assuming response structure: { token, user: { role, clientId, name } }
+                const { token, user } = response.data;
 
-        try {
-            const response = await api.post('/auth/login', { email, password });
+                localStorage.setItem('token', token);
+                localStorage.setItem('user', JSON.stringify(user));
 
-            // Assuming response structure: { token, user: { role, clientId, name } }
-            const { token, user } = response.data;
+                if (user.role === 'admin') {
+                    navigate('/admin/dashboard');
+                } else {
+                    navigate('/client/dashboard');
+                }
+            } catch (err) {
+                // If 500 server error and first attempt, retry once
+                if (err.response?.status === 500 && retryCount === 0) {
+                    console.log("Server error (likely cold start). Retrying...");
+                    // Small delay to allow DB connection to establish
+                    await new Promise(resolve => setTimeout(resolve, 800));
+                    return performLogin(1);
+                }
 
-            localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(user));
-
-            if (user.role === 'admin') {
-                navigate('/admin/dashboard');
-            } else {
-                navigate('/client/dashboard');
+                setError(err.response?.data?.message || err.response?.data?.msg || 'Login failed.');
+                setLoading(false);
             }
-        } catch (err) {
-            setError(err.response?.data?.message || err.response?.data?.msg || 'Login failed.');
-        } finally {
-            setLoading(false);
-        }
+        };
+
+        performLogin();
     };
 
     return (
