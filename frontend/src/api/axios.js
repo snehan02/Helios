@@ -22,4 +22,26 @@ api.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
+// Add a response interceptor to handle retries for 500 errors (cold starts)
+api.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+        const { config, response } = error;
+
+        // If it's a 500 error and we haven't retried too many times
+        if (response?.status === 500 && !config._retryCount) {
+            config._retryCount = (config._retryCount || 0) + 1;
+
+            if (config._retryCount <= 2) {
+                console.log(`Retrying request due to server error (cold start?): ${config.url}`);
+                // Backoff delay
+                await new Promise(resolve => setTimeout(resolve, 1000 * config._retryCount));
+                return api(config);
+            }
+        }
+
+        return Promise.reject(error);
+    }
+);
+
 export default api;

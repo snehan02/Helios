@@ -19,11 +19,19 @@ dotenv.config();
 // Validate critical env vars before starting
 validateEnv();
 
-// Connect to DB (cached)
-connectDB();
-
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Ensure DB is connected before handling any request
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (err: any) {
+        console.error('Database connection error in middleware:', err);
+        res.status(500).json({ message: 'Database connection failed' });
+    }
+});
 
 app.use(cors({
     origin: process.env.FRONTEND_URL || '*',

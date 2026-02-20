@@ -36,15 +36,15 @@ const Login = () => {
                     navigate('/client/dashboard');
                 }
             } catch (err) {
-                // If 500 server error and first attempt, retry once
-                if (err.response?.status === 500 && retryCount === 0) {
-                    console.log("Server error (likely cold start). Retrying...");
-                    // Small delay to allow DB connection to establish
-                    await new Promise(resolve => setTimeout(resolve, 800));
-                    return performLogin(1);
+                // If 500 server error and less than 3 attempts, retry
+                if (err.response?.status === 500 && retryCount < 3) {
+                    console.log(`Server error (likely cold start). Retry attempt ${retryCount + 1}...`);
+                    // Small delay to allow DB connection to establish - increased to 1.5s
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    return performLogin(retryCount + 1);
                 }
 
-                setError(err.response?.data?.message || err.response?.data?.msg || 'Login failed.');
+                setError(err.response?.data?.message || err.response?.data?.msg || 'Login failed. Please try again later.');
                 setLoading(false);
             }
         };
