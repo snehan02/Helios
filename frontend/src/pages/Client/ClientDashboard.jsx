@@ -238,8 +238,8 @@ const ClientDashboard = () => {
                 {/* Sidebar: Widgets */}
                 <div className="flex flex-col gap-8 lg:h-full lg:overflow-y-auto custom-scrollbar-silver pr-2">
                     <div className="glass-panel p-6 rounded-2xl mb-2">
-                        <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-1">Quick Access</p>
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">Project Assets</h2>
+                        <p className="text-[10px] font-black text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.2em] mb-1">Quick Access</p>
+                        <h2 className="text-lg font-bold text-zinc-900 dark:text-white tracking-tight">Project Assets</h2>
                     </div>
                     {layout.map((widget) => {
                         if (!widget.data || widget.data.length === 0) return null;
