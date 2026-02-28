@@ -91,7 +91,7 @@ const Sidebar = ({ navItems = [], role = 'admin', branding = null, mobileOpen = 
                         </div>
                     ) : (
                         <div className="flex items-center gap-2 text-zinc-900 dark:text-white overflow-hidden">
-                            <Hexagon size={28} className="flex-shrink-0" />
+                            <img src="/favicon.png" alt="Fortimark Logo" className="h-7 w-7 object-contain flex-shrink-0" />
                             <AnimatePresence>
                                 {!isCollapsed && (
                                     <motion.span
@@ -100,7 +100,7 @@ const Sidebar = ({ navItems = [], role = 'admin', branding = null, mobileOpen = 
                                         exit={{ opacity: 0, width: 0 }}
                                         className="text-xl font-bold tracking-wider text-zinc-900 dark:text-white whitespace-nowrap"
                                     >
-                                        HELIOS
+                                        FORTIMARK
                                     </motion.span>
                                 )}
                             </AnimatePresence>

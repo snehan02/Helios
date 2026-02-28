@@ -131,7 +131,7 @@ const ClientDashboard = () => {
         try {
             console.log("Generating report for:", clientName);
 
-            let reportText = `HELIOS PROJECT REPORT\n`;
+            let reportText = `FORTIMARK PROJECT REPORT\n`;
             reportText += `=====================\n\n`;
             reportText += `Client: ${clientName || 'Partner'}\n`;
             reportText += `Generated At: ${new Date().toLocaleString()}\n`;
@@ -196,7 +196,7 @@ const ClientDashboard = () => {
                         <div>
                             <div className="flex items-center gap-3 mb-2">
                                 <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399]" />
-                                <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tighter">PROJECT HUB</h1>
+                                <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tighter">CLIENT STATUS</h1>
                             </div>
                             <p className="text-zinc-500 font-medium text-sm flex items-center gap-2">
                                 Welcome, <span className="text-zinc-900 dark:text-zinc-300 font-bold capitalize">{clientName || 'Partner'}</span>

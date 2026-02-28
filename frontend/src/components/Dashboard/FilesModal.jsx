@@ -25,7 +25,7 @@ const FilesModal = ({ isOpen, onClose, clients }) => {
             // Since these are mock files, we force a .txt extension 
             const fileName = `${file.name}.txt`;
 
-            const content = `HELIOS SIMULATED FILE\n` +
+            const content = `FORTIMARK SIMULATED FILE\n` +
                 `=====================\n\n` +
                 `File Name: ${file.name}\n` +
                 `Created Date: ${file.date}\n` +

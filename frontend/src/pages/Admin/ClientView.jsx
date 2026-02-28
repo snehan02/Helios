@@ -126,7 +126,7 @@ const ClientView = () => {
     const handleDownloadReport = () => {
         try {
             const clientName = client?.name || 'Client';
-            let reportText = `HELIOS ADMIN DATA EXPORT\n`;
+            let reportText = `FORTIMARK ADMIN DATA EXPORT\n`;
             reportText += `========================\n\n`;
             reportText += `Client: ${clientName}\n`;
             reportText += `Generated At: ${new Date().toLocaleString()}\n`;

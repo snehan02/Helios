@@ -62,9 +62,9 @@ const Login = () => {
             >
                 <div className="mb-8 text-center">
                     <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-white border border-zinc-200 dark:border-zinc-700">
-                        <Lock size={32} />
+                        <img src="/favicon.png" alt="Fortimark Logo" className="w-8 h-8 object-contain" />
                     </div>
-                    <h1 className="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">Helios</h1>
+                    <h1 className="text-3xl font-bold text-zinc-900 dark:text-white tracking-tight">Fortimark</h1>
                     <p className="mt-2 text-zinc-600 dark:text-gray-400">Sign in to your account</p>
                 </div>
 
